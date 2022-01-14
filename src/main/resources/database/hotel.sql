@@ -21,18 +21,18 @@ USE `hotel`;
 DROP TABLE IF EXISTS `reservation`;
 
 CREATE TABLE `reservation` (
-  `reservationId` bigint(20) NOT NULL AUTO_INCREMENT,
-  `startDate` date NOT NULL,
-  `endDate` date NOT NULL,
-  `totalSum` double NOT NULL,
+  `reservation_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `total_sum` double NOT NULL,
   `note` varchar(255) DEFAULT NULL,
-  `userId` bigint(20) NOT NULL,
-  `roomId` bigint(20) NOT NULL,
-  PRIMARY KEY (`reservationId`),
-  KEY `fk_reservation_user` (`userId`),
-  KEY `fk_reservation_room` (`roomId`),
-  CONSTRAINT `fk_reservation_room` FOREIGN KEY (`roomId`) REFERENCES `room` (`roomId`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_reservation_user` FOREIGN KEY (`userId`) REFERENCES `users` (`userId`) ON UPDATE CASCADE
+  `user_id` bigint(20) NOT NULL,
+  `room_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`reservation_id`),
+  KEY `fk_reservation_user` (`user_id`),
+  KEY `fk_reservation_room` (`room_id`),
+  CONSTRAINT `fk_reservation_room` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_reservation_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `reservation` */
@@ -42,13 +42,13 @@ CREATE TABLE `reservation` (
 DROP TABLE IF EXISTS `reservationservice`;
 
 CREATE TABLE `reservationservice` (
-  `reservationId` bigint(20) NOT NULL,
-  `serviceId` bigint(20) NOT NULL,
-  `numberOfUsages` int(11) NOT NULL,
-  PRIMARY KEY (`reservationId`,`serviceId`),
-  KEY `fk_reservationservice_service` (`serviceId`),
-  CONSTRAINT `fk_reservationservice_reservation` FOREIGN KEY (`reservationId`) REFERENCES `reservation` (`reservationId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_reservationservice_service` FOREIGN KEY (`serviceId`) REFERENCES `service` (`serviceId`) ON UPDATE CASCADE
+  `reservation_id` bigint(20) NOT NULL,
+  `service_id` bigint(20) NOT NULL,
+  `number_of_usages` int(11) NOT NULL,
+  PRIMARY KEY (`reservation_id`,`service_id`),
+  KEY `fk_reservationservice_service` (`service_id`),
+  CONSTRAINT `fk_reservationservice_reservation` FOREIGN KEY (`reservation_id`) REFERENCES `reservation` (`reservation_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_reservationservice_service` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `reservationservice` */
@@ -58,10 +58,10 @@ CREATE TABLE `reservationservice` (
 DROP TABLE IF EXISTS `role`;
 
 CREATE TABLE `role` (
-  `roleId` bigint(20) NOT NULL AUTO_INCREMENT,
-  `roleName` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`roleId`),
-  UNIQUE KEY `UNIQUE` (`roleName`)
+  `role_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`role_id`),
+  UNIQUE KEY `UNIQUE` (`role_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `role` */
@@ -71,14 +71,14 @@ CREATE TABLE `role` (
 DROP TABLE IF EXISTS `room`;
 
 CREATE TABLE `room` (
-  `roomId` bigint(20) NOT NULL AUTO_INCREMENT,
-  `roomNumber` int(11) NOT NULL,
+  `room_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `room_number` int(11) NOT NULL,
   `floor` int(11) NOT NULL,
-  `roomTypeId` bigint(20) NOT NULL,
-  PRIMARY KEY (`roomId`),
-  UNIQUE KEY `UNIQUE` (`roomNumber`),
-  KEY `fk_room_roomType` (`roomTypeId`),
-  CONSTRAINT `fk_room_roomType` FOREIGN KEY (`roomTypeId`) REFERENCES `roomtype` (`roomTypeId`) ON UPDATE CASCADE
+  `room_type_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`room_id`),
+  UNIQUE KEY `UNIQUE` (`room_number`),
+  KEY `fk_room_roomType` (`room_type_id`),
+  CONSTRAINT `fk_room_roomType` FOREIGN KEY (`room_type_id`) REFERENCES `roomtype` (`room_type_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `room` */
@@ -88,12 +88,12 @@ CREATE TABLE `room` (
 DROP TABLE IF EXISTS `roomtype`;
 
 CREATE TABLE `roomtype` (
-  `roomTypeId` bigint(20) NOT NULL AUTO_INCREMENT,
-  `roomTypeName` varchar(255) NOT NULL,
-  `pricePerDay` double NOT NULL,
+  `room_type_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `room_type_name` varchar(255) NOT NULL,
+  `price_per_day` double NOT NULL,
   `description` varchar(255) NOT NULL,
-  PRIMARY KEY (`roomTypeId`),
-  UNIQUE KEY `UNIQUE` (`roomTypeName`)
+  PRIMARY KEY (`room_type_id`),
+  UNIQUE KEY `UNIQUE` (`room_type_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `roomtype` */
@@ -103,12 +103,12 @@ CREATE TABLE `roomtype` (
 DROP TABLE IF EXISTS `service`;
 
 CREATE TABLE `service` (
-  `serviceId` bigint(20) NOT NULL AUTO_INCREMENT,
-  `serviceName` varchar(255) NOT NULL,
-  `pricePerUse` double NOT NULL,
+  `service_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `service_name` varchar(255) NOT NULL,
+  `price_per_use` double NOT NULL,
   `description` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`serviceId`),
-  UNIQUE KEY `UNIQUE` (`serviceName`)
+  PRIMARY KEY (`service_id`),
+  UNIQUE KEY `UNIQUE` (`service_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `service` */
@@ -118,18 +118,18 @@ CREATE TABLE `service` (
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
-  `userId` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `firstName` varchar(255) NOT NULL,
-  `lastName` varchar(255) NOT NULL,
-  `dateOfBirth` date NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `date_of_birth` date NOT NULL,
   `address` varchar(255) NOT NULL,
-  `roleId` bigint(20) NOT NULL,
-  PRIMARY KEY (`userId`),
+  `role_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`user_id`),
   UNIQUE KEY `UNIQUE` (`username`),
-  KEY `fk_user_role` (`roleId`),
-  CONSTRAINT `fk_user_role` FOREIGN KEY (`roleId`) REFERENCES `role` (`roleId`) ON UPDATE CASCADE
+  KEY `fk_user_role` (`role_id`),
+  CONSTRAINT `fk_user_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `users` */

@@ -7,14 +7,14 @@ import javax.persistence.*;
 public class Service {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "serviceId")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "service_id")
     private long serviceId;
 
-    @Column(name = "serviceName", nullable = false, unique = true)
+    @Column(name = "service_name", nullable = false, unique = true)
     private String serviceName;
 
-    @Column(name = "pricePerUse", nullable = false)
+    @Column(name = "price_per_use", nullable = false)
     private double pricePerUse;
 
     @Column(name = "description", nullable = false)

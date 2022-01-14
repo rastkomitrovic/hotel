@@ -8,8 +8,8 @@ import java.util.Date;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "userId")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private long userId;
 
     @Column(name = "username", nullable = false, unique = true)
@@ -18,20 +18,20 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "firstName", nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "lastName", nullable = true)
+    @Column(name = "last_name", nullable = true)
     private String lastName;
 
-    @Column(name = "dateOfBirth", nullable = false)
+    @Column(name = "date_of_birth", nullable = false)
     private Date dateOfBirth;
 
     @Column(name = "address", nullable = false)
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roleId", nullable = false)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     public User() {

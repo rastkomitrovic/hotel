@@ -11,11 +11,11 @@ import java.util.Objects;
 public class ReservationServiceEmbeddedId implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservationId", nullable = false)
+    @JoinColumn(name = "reservation_id", nullable = false)
     private Reservation reservation;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "serviceId", nullable = false)
+    @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 
     public ReservationServiceEmbeddedId() {

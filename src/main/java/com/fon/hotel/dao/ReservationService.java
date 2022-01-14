@@ -10,7 +10,7 @@ public class ReservationService {
     @EmbeddedId
     private ReservationServiceEmbeddedId reservationServiceEmbeddedId;
 
-    @Column(name = "numberOfUsages", nullable = false)
+    @Column(name = "number_of_usages", nullable = false)
     private int numberOfUsages;
 
     public ReservationService() {

@@ -7,18 +7,18 @@ import javax.persistence.*;
 public class Room {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "roomId")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "room_id")
     private long roomId;
 
-    @Column(name = "roomNumber", nullable = false, unique = true)
+    @Column(name = "room_number", nullable = false, unique = true)
     private int roomNumber;
 
     @Column(name = "floor", nullable = false)
     private int floor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roomTypeId", nullable = false)
+    @JoinColumn(name = "room_type_id", nullable = false)
     private RoomType roomType;
 
     public Room() {

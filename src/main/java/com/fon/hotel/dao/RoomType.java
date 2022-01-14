@@ -7,14 +7,14 @@ import javax.persistence.*;
 public class RoomType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "roomTypeId")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "room_type_id")
     private long roomTypeId;
 
-    @Column(name = "roomTypeName", nullable = false, unique = true)
+    @Column(name = "room_type_name", nullable = false, unique = true)
     private String roomTypeName;
 
-    @Column(name = "pricePerDay", nullable = false)
+    @Column(name = "price_per_day", nullable = false)
     private double pricePerDay;
 
     @Column(name = "description", nullable = false)
