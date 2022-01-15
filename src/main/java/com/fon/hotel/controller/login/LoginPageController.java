@@ -33,8 +33,6 @@ public class LoginPageController {
 
     @RequestMapping({"/logoutSuccess", "/login"})
     public String loginPage(Model model) throws ParseException, HotelServiceException {
-        //SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        //userService.save(new UserDTO(-1,"boris",passwordEncoder.encode("BorisZivkov1996!"),"Boris","Zivkov",sdf.parse("05.07.1996"),"Marka Tajcevica 6b",new RoleDTO(1,"ADMIN")));
         model.addAttribute("user",new UserDTO());
         return "loginPage";
     }
