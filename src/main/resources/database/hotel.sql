@@ -27,12 +27,14 @@ CREATE TABLE `reservation` (
   `total_sum` double NOT NULL,
   `note` varchar(255) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL,
+  'employee_id' bigint(20) NOT NULL,
   `room_id` bigint(20) NOT NULL,
   PRIMARY KEY (`reservation_id`),
   KEY `fk_reservation_user` (`user_id`),
   KEY `fk_reservation_room` (`room_id`),
   CONSTRAINT `fk_reservation_room` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_reservation_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE
+  CONSTRAINT `fk_reservation_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_reservation_employee_user` FOREIGN KEY (`employee_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `reservation` */
@@ -124,6 +126,7 @@ CREATE TABLE `users` (
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
   `date_of_birth` date NOT NULL,
+  `passport_number` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   `role_id` bigint(20) NOT NULL,
   PRIMARY KEY (`user_id`),
