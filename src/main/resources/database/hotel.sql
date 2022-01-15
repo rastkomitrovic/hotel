@@ -45,6 +45,8 @@ CREATE TABLE `users` (
                          `date_of_birth` date NOT NULL,
                          `passport_number` varchar(255) NOT NULL,
                          `address` varchar(255) NOT NULL,
+                         `email` varchar(255) NOT NULL,
+                         `phone_number` varchar(255) NOT NULL,
                          `role_id` bigint(20) NOT NULL,
                          PRIMARY KEY (`user_id`),
                          UNIQUE KEY `UNIQUE` (`username`),
@@ -53,7 +55,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `users` */
-insert into users(username,password,first_name,last_name,date_of_birth,passport_number,address,role_id) values('boris','$2a$12$NWjYEKBZeu9dn5zETPZoW.gkl0fPwmenHKjtJae/URBshnZ1QUDCC','Boris','Zivkov','1996-07-05','1234512413','Marka Tajcevica 6b',(Select role_id from role where role_name = 'ADMIN'));
+insert into users(username,password,first_name,last_name,date_of_birth,passport_number,address,email,phone_number,role_id) values('boris','$2a$12$NWjYEKBZeu9dn5zETPZoW.gkl0fPwmenHKjtJae/URBshnZ1QUDCC','Boris','Zivkov','1996-07-05','1234512413','Marka Tajcevica 6b','boris.zivkov96@gmail.com','+381649138692',(Select role_id from role where role_name = 'ADMIN'));
 
 /*Table structure for table `roomtype` */
 

@@ -37,8 +37,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO save(UserDTO object) throws HotelServiceException {
-        if (userRepository.existsByUsername(object.getUsername()) || userRepository.existsById(object.getUserId()))
-            throw new HotelServiceException("Vec postoji korisnik sa unetim korisnickim imenom ili Id-em");
+        if (userRepository.existsByUsername(object.getUsername()))
+            throw new HotelServiceException("Vec postoji korisnik sa unetim korisnickim imenom");
+        if(userRepository.existsById(object.getUserId()))
+            throw new HotelServiceException("Vec postoji korisnik sa unetim Id-em");
+        if(userRepository.existsByPassportNumber(object.getPassportNumber()))
+            throw new HotelServiceException("Vec postoji korisnik sa unetim brojem pasosa");
+        if(userRepository.existsByEmail(object.getEmail()))
+            throw new HotelServiceException("Vec postoji korisnik sa unetim emailom");
+        if(userRepository.existsByPhoneNumber(object.getPhoneNumber()))
+            throw new HotelServiceException("Vec postoji korisnik sa unetim brojem telefona");
         return userMapper.toDTO(userRepository.save(userMapper.toDAO(object)));
     }
 

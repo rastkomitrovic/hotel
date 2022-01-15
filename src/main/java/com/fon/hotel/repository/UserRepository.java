@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
+
     boolean existsByUsername(String username);
 
     @Query("select u from User u where u.username like CONCAT('%',:param ,'%')  or concat(u.username, ' ', u.lastName) like CONCAT('%',:param ,'%') ")
@@ -19,4 +20,10 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
     @Query("Select u from User u where u.username=:username")
     Optional<User> findByUsername(@Param("username") String username);
+
+    boolean existsByPassportNumber(String passportNumber);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByPhoneNumber(String phoneNumber);
 }
