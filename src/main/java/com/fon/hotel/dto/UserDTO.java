@@ -21,13 +21,15 @@ public class UserDTO {
 
     private String address;
 
+    private String passportNumber;
+
     private RoleDTO role;
 
     public UserDTO() {
 
     }
 
-    public UserDTO(long userId, String username, String password, String firstName, String lastName, Date dateOfBirth, String address, RoleDTO role) {
+    public UserDTO(long userId, String username, String password, String firstName, String lastName, Date dateOfBirth, String address, String passportNumber, RoleDTO role) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -35,6 +37,7 @@ public class UserDTO {
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.address = address;
+        this.passportNumber = passportNumber;
         this.role = role;
     }
 
@@ -92,6 +95,14 @@ public class UserDTO {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getPassportNumber() {
+        return passportNumber;
+    }
+
+    public void setPassportNumber(String passportNumber) {
+        this.passportNumber = passportNumber;
     }
 
     public RoleDTO getRole() {

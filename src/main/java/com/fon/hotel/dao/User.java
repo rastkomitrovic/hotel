@@ -30,6 +30,9 @@ public class User {
     @Column(name = "address", nullable = false)
     private String address;
 
+    @Column(name = "passport_number", nullable = false)
+    private String passportNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
@@ -38,7 +41,7 @@ public class User {
 
     }
 
-    public User(long userId, String username, String password, String firstName, String lastName, Date dateOfBirth, String address, Role role) {
+    public User(long userId, String username, String password, String firstName, String lastName, Date dateOfBirth, String address, String passportNumber, Role role) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -46,6 +49,7 @@ public class User {
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.address = address;
+        this.passportNumber = passportNumber;
         this.role = role;
     }
 
@@ -105,6 +109,14 @@ public class User {
         this.address = address;
     }
 
+    public String getPassportNumber() {
+        return passportNumber;
+    }
+
+    public void setPassportNumber(String passportNumber) {
+        this.passportNumber = passportNumber;
+    }
+
     public Role getRole() {
         return role;
     }
@@ -131,6 +143,7 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", address='" + address + '\'' +
+                ", passportNumber='" + passportNumber + '\'' +
                 ", role=" + role +
                 '}';
     }

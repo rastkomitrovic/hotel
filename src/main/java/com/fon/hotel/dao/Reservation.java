@@ -30,6 +30,10 @@ public class Reservation {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
+    private User employee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
@@ -40,13 +44,14 @@ public class Reservation {
 
     }
 
-    public Reservation(long reservationId, Date startDate, Date endDate, double totalSum, String note, User user, Room room, List<ReservationService> reservationServices) {
+    public Reservation(long reservationId, Date startDate, Date endDate, double totalSum, String note, User user, User employee, Room room, List<ReservationService> reservationServices) {
         this.reservationId = reservationId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalSum = totalSum;
         this.note = note;
         this.user = user;
+        this.employee = employee;
         this.room = room;
         this.reservationServices = reservationServices;
     }
@@ -99,6 +104,14 @@ public class Reservation {
         this.user = user;
     }
 
+    public User getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(User employee) {
+        this.employee = employee;
+    }
+
     public Room getRoom() {
         return room;
     }
@@ -132,6 +145,7 @@ public class Reservation {
                 ", totalSum=" + totalSum +
                 ", note='" + note + '\'' +
                 ", user=" + user +
+                ", employee=" + employee +
                 ", room=" + room +
                 ", reservationServices=" + reservationServices +
                 '}';
