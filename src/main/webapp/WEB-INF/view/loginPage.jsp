@@ -1,6 +1,4 @@
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@include file="components/import.jsp"%>
 <html>
 <head>
     <title>Login</title>
@@ -9,7 +7,11 @@
 <body class="login-body">
     <label>
         <c:if test="${infoMessage ne null}">
-            <p style="color: red">${infoMessage}</p>
+            <p style="color: blue">${infoMessage}</p>
+        </c:if>
+
+        <c:if test="${errorMessage ne null}">
+            <p style="color: red">${errorMessage}</p>
         </c:if>
     </label>
     <form:form action="${pageContext.request.contextPath}/performLogin" modelAttribute="user"

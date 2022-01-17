@@ -19,6 +19,9 @@ public class UserDTO {
     @Size(min = 4, max = 50, message = "Sifra mora imati minimum 4 a maksimum 50 karaktera")
     private String repeatPassword;
 
+    @Size(min=4,max = 50,message = "Stara sifra mora imati minimum 4 a maksimum 50 karaktera")
+    private String oldPassword;
+
     @Size(min = 2, max = 40, message = "Ime mora sadrzati minimum 2 a maksimum 40 karaktera")
     private String firstName;
 
@@ -47,11 +50,12 @@ public class UserDTO {
 
     }
 
-    public UserDTO(long userId, String username, String password, String repeatPassword, String firstName, String lastName, Date dateOfBirth, String address, String passportNumber, String email, String phoneNumber, RoleDTO role) {
+    public UserDTO(long userId, String username, String password, String repeatPassword, String oldPassword, String firstName, String lastName, Date dateOfBirth, String address, String passportNumber, String email, String phoneNumber, RoleDTO role) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.repeatPassword = repeatPassword;
+        this.oldPassword = oldPassword;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -88,6 +92,14 @@ public class UserDTO {
 
     public String getRepeatPassword() {
         return repeatPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
     }
 
     public void setRepeatPassword(String repeatPassword) {

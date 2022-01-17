@@ -1,10 +1,11 @@
 <%@include file="components/import.jsp"%>
 <html>
 <head>
-    <title>Registracija</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
+    <title>Profil</title>
 </head>
 <body>
+<%@include file="components/header.jsp" %>
+
 <label>
     <c:if test="${errorMessage ne null}">
         <p style="color: red">${errorMessage}</p>
@@ -14,13 +15,10 @@
         <p style="color: blue">${infoMessage}</p>
     </c:if>
 </label>
-    <form:form action="${pageContext.request.contextPath}/register" modelAttribute="user" method="post">
 
-        <label for="username">Korisnicko ime</label>
-        <br/>
-        <form:input path="username" id="username"/>
-        <br/>
-        <form:errors path="username" cssStyle="color: red"/>
+
+<c:if test="${user ne null}">
+    <form:form action="${pageContext.request.contextPath}/saveAccountInfo" modelAttribute="user" method="post">
 
         <br/>
         <br/>
@@ -30,15 +28,6 @@
         <form:password path="password" id="password"/>
         <br/>
         <form:errors path="password" cssStyle="color: red"/>
-
-        <br/>
-        <br/>
-
-        <label for="repeatPassword">Ponovite sifru</label>
-        <br/>
-        <form:password path="repeatPassword" id="repeatPassword"/>
-        <br/>
-        <form:errors path="repeatPassword" cssStyle="color: red"/>
 
         <br/>
         <br/>
@@ -106,8 +95,11 @@
         <br/>
         <br/>
 
-        <form:button type="submit">Registruj se</form:button>
-
+        <form:button type="submit">Sacuvaj izmene</form:button>
     </form:form>
+</c:if>
+
+
+<%@include file="components/footer.jsp" %>
 </body>
 </html>

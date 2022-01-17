@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface UserService extends GenericPagingAndSortingService<UserDTO, Long> {
 
     Optional<UserDTO> findByUsername(String username) throws HotelServiceException;
+
+    void updatePassword(String username,String password) throws HotelServiceException;
 }

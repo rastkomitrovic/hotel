@@ -79,5 +79,14 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findByUsername(username);
         return user.map(value -> userMapper.toDTO(value));
     }
+
+    @Override
+    public void updatePassword(String username, String password) throws HotelServiceException {
+        Optional<User> user = userRepository.findByUsername(username);
+        if(!user.isPresent())
+            throw new HotelServiceException("Ne postoji korisnik sa korisnickim imenom "+username);
+        user.get().setPassword(password);
+        userRepository.save(user.get());
+    }
 }
 
