@@ -5,15 +5,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-<label>
-    <c:if test="${errorMessage ne null}">
-        <p style="color: red">${errorMessage}</p>
-    </c:if>
-
-    <c:if test="${infoMessage ne null}">
-        <p style="color: blue">${infoMessage}</p>
-    </c:if>
-</label>
+<%@include file="components/messages.jsp" %>
     <form:form action="${pageContext.request.contextPath}/register" modelAttribute="user" method="post">
 
         <label for="username">Korisnicko ime</label>

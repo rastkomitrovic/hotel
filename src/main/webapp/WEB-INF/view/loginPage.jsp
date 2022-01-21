@@ -5,15 +5,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body class="login-body">
-    <label>
-        <c:if test="${infoMessage ne null}">
-            <p style="color: blue">${infoMessage}</p>
-        </c:if>
-
-        <c:if test="${errorMessage ne null}">
-            <p style="color: red">${errorMessage}</p>
-        </c:if>
-    </label>
+<%@include file="components/messages.jsp" %>
     <form:form action="${pageContext.request.contextPath}/performLogin" modelAttribute="user"
                method="post"> <!-- onsubmit maybe -->
 

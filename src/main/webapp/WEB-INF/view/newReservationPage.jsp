@@ -1,14 +1,20 @@
 <%@include file="components/import.jsp"%>
 <html>
 <head>
-    <title>O Nama</title>
+    <title>Nova rezervacija</title>
 </head>
 <body>
 <%@include file="components/header.jsp" %>
 <%@include file="components/messages.jsp" %>
 
 <div>
-    <p>About us text</p>
+    <p>Nova rezervacija</p>
+    <br/>
+</div>
+<div>
+    <form:form modelAttribute="reservation" action="${pageContext.request.contextPath}/employee/saveReservation">
+
+    </form:form>
 </div>
 
 <%@include file="components/footer.jsp" %>

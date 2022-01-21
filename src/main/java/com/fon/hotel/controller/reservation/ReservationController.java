@@ -17,10 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -66,5 +65,18 @@ public class ReservationController {
         model.addAttribute("currentPage", pageResult.getNumber());
         model.addAttribute("reservations", pageResult.getContent());
         return "myReservationsPage";
+    }
+
+    @RequestMapping("/employee/newReservationPage")
+    public String newReservationPage(Model model){
+        model.addAttribute("reservation",new ReservationDTO());
+        return "newReservationPage";
+    }
+
+    @PostMapping("/employee/saveReservation")
+    public String saveReservation(@Valid @ModelAttribute("reservation") ReservationDTO reservationDTO, Model model, Principal principal){
+
+        model.addAttribute("infoMessage","Uspesno ste kreirali novu rezervaciju");
+        return "mainPage";
     }
 }

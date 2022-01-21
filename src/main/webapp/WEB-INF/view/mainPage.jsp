@@ -7,17 +7,7 @@
 <body>
 
 <%@include file="components/header.jsp"%>
-
-
-<label>
-    <c:if test="${errorMessage ne null}">
-        <p style="color: red">${errorMessage}</p>
-    </c:if>
-
-    <c:if test="${infoMessage ne null}">
-        <p style="color: blue">${infoMessage}</p>
-    </c:if>
-</label>
+<%@include file="components/messages.jsp" %>
 
 
 <p>Main page</p>

@@ -1,20 +1,11 @@
 <%@include file="components/import.jsp" %>
 <html>
 <head>
-    <title>Profil</title>
+    <title>Moje rezervacije</title>
 </head>
 <body>
 <%@include file="components/header.jsp" %>
-
-<label>
-    <c:if test="${errorMessage ne null}">
-        <p style="color: red">${errorMessage}</p>
-    </c:if>
-
-    <c:if test="${infoMessage ne null}">
-        <p style="color: blue">${infoMessage}</p>
-    </c:if>
-</label>
+<%@include file="components/messages.jsp" %>
 
 <c:choose>
     <c:when test="${isEmpty}">
