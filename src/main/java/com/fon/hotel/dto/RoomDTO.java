@@ -1,7 +1,5 @@
 package com.fon.hotel.dto;
 
-import com.fon.hotel.dao.RoomType;
-
 public class RoomDTO {
 
     private long roomId;

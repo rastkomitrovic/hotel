@@ -4,7 +4,7 @@
         <a href="${pageContext.request.contextPath}/aboutUsPage">O Nama</a>
         <a href="${pageContext.request.contextPath}/changeAccountInfoPage">Profil</a>
         <a href="${pageContext.request.contextPath}/changePasswordPage">Promeni sifru</a>
-        <a href="${pageContext.request.contextPath}/myReservationsPage">Moje rezervacije</a>
+        <a href="${pageContext.request.contextPath}/0/5/startDate">Moje rezervacije</a>
         <sec:authorize access="hasAnyAuthority('ADMIN','EMPLOYEE')">
             <a href="${pageContext.request.contextPath}/employee/newReservationPage">Nova rezervacija</a>
         </sec:authorize>

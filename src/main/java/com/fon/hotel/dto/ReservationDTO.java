@@ -17,6 +17,8 @@ public class ReservationDTO {
 
     private UserDTO user;
 
+    private UserDTO employee;
+
     private RoomDTO room;
 
     private List<ReservationServiceDTO> reservationServices;
@@ -25,13 +27,14 @@ public class ReservationDTO {
 
     }
 
-    public ReservationDTO(long reservationId, Date startDate, Date endDate, double totalSum, String note, UserDTO user, RoomDTO room, List<ReservationServiceDTO> reservationServices) {
+    public ReservationDTO(long reservationId, Date startDate, Date endDate, double totalSum, String note, UserDTO user, UserDTO employee, RoomDTO room, List<ReservationServiceDTO> reservationServices) {
         this.reservationId = reservationId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.totalSum = totalSum;
         this.note = note;
         this.user = user;
+        this.employee = employee;
         this.room = room;
         this.reservationServices = reservationServices;
     }
@@ -84,6 +87,14 @@ public class ReservationDTO {
         this.user = user;
     }
 
+    public UserDTO getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(UserDTO employee) {
+        this.employee = employee;
+    }
+
     public RoomDTO getRoom() {
         return room;
     }
@@ -117,6 +128,7 @@ public class ReservationDTO {
                 ", totalSum=" + totalSum +
                 ", note='" + note + '\'' +
                 ", user=" + user +
+                ", employee=" + employee +
                 ", room=" + room +
                 ", reservationServices=" + reservationServices +
                 '}';

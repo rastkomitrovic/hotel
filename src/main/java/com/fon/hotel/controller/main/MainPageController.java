@@ -12,4 +12,9 @@ public class MainPageController {
     public String mainPage(Model model){
         return "mainPage";
     }
+
+    @RequestMapping("/aboutUsPage")
+    public String aboutUsPage(Model model) {
+        return "aboutUsPage";
+    }
 }
