@@ -27,4 +27,10 @@ public class ServiceEditor extends PropertyEditorSupport {
             throw new IllegalArgumentException("Exception at ServiceEditor.setAsText:"+ex.getMessage());
         }
     }
+
+    @Override
+    public Object getValue() {
+        Object o = super.getValue();
+        return o;
+    }
 }

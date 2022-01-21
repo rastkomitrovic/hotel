@@ -1,13 +1,13 @@
 package com.fon.hotel.controller.reservation;
 
-import com.fon.hotel.dto.ReservationDTO;
-import com.fon.hotel.dto.RoomDTO;
-import com.fon.hotel.dto.RoomTypeDTO;
-import com.fon.hotel.dto.ServiceDTO;
+import com.fon.hotel.dto.*;
 import com.fon.hotel.editor.RoomEditor;
 import com.fon.hotel.editor.RoomTypeEditor;
 import com.fon.hotel.editor.ServiceEditor;
+import com.fon.hotel.exception.HotelServiceException;
 import com.fon.hotel.service.ReservationService;
+import com.fon.hotel.service.ServiceService;
+import com.fon.hotel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -39,6 +40,12 @@ public class ReservationController {
     @Autowired
     private ServiceEditor serviceEditor;
 
+    @Autowired
+    private ServiceService serviceService;
+
+    @Autowired
+    private UserService userService;
+
     @InitBinder
     public void initBinder(WebDataBinder webDataBinder) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-ddd");
@@ -46,7 +53,7 @@ public class ReservationController {
         webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, false));
         webDataBinder.registerCustomEditor(RoomDTO.class, this.roomEditor);
         webDataBinder.registerCustomEditor(RoomTypeDTO.class, this.roomTypeEditor);
-        webDataBinder.registerCustomEditor(ServiceDTO.class, this.serviceEditor);
+        webDataBinder.registerCustomEditor(ReservationServiceDTO.class, this.serviceEditor);
     }
 
     @RequestMapping("myReservationsPage/{page}/{size}/{sort}")
@@ -68,9 +75,16 @@ public class ReservationController {
     }
 
     @RequestMapping("/employee/newReservationPage")
-    public String newReservationPage(Model model){
-        model.addAttribute("reservation",new ReservationDTO());
-        return "newReservationPage";
+    public String newReservationPage(Model model, RedirectAttributes redirectAttributes){
+        try{
+            model.addAttribute("reservation",new ReservationDTO());
+            model.addAttribute("users",userService.getAll());
+            model.addAttribute("services",serviceService.getAll());
+            return "newReservationPage";
+        }catch(HotelServiceException ex){
+            redirectAttributes.addFlashAttribute("errorMessage",ex.getMessage());
+            return "redirect:/main";
+        }
     }
 
     @PostMapping("/employee/saveReservation")
