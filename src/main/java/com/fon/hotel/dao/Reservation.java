@@ -19,6 +19,9 @@ public class Reservation {
     @Column(name = "end_date", nullable = false)
     private Date endDate;
 
+    @Column(name = "date_created", nullable = false)
+    private Date dateCreated;
+
     @Column(name = "total_sum", nullable = false)
     private double totalSum;
 
@@ -33,9 +36,9 @@ public class Reservation {
     @JoinColumn(name = "employee_id", nullable = false)
     private User employee;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", nullable = false)
-    private Room room;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "reservationroom", joinColumns = @JoinColumn(name = "reservation_id", nullable = false), inverseJoinColumns = @JoinColumn(name = "room_id", nullable = false))
+    private List<Room> rooms;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reservationServiceEmbeddedId.reservation")
     private List<ReservationService> reservationServices;
@@ -44,7 +47,7 @@ public class Reservation {
 
     }
 
-    public Reservation(long reservationId, Date startDate, Date endDate, double totalSum, String note, User user, User employee, Room room, List<ReservationService> reservationServices) {
+    public Reservation(long reservationId, Date startDate, Date endDate, double totalSum, String note, User user, User employee, List<Room> rooms, List<ReservationService> reservationServices) {
         this.reservationId = reservationId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -52,7 +55,7 @@ public class Reservation {
         this.note = note;
         this.user = user;
         this.employee = employee;
-        this.room = room;
+        this.rooms = rooms;
         this.reservationServices = reservationServices;
     }
 
@@ -112,12 +115,12 @@ public class Reservation {
         this.employee = employee;
     }
 
-    public Room getRoom() {
-        return room;
+    public List<Room> getRooms() {
+        return rooms;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
     }
 
     public List<ReservationService> getReservationServices() {
@@ -146,7 +149,7 @@ public class Reservation {
                 ", note='" + note + '\'' +
                 ", user=" + user +
                 ", employee=" + employee +
-                ", room=" + room +
+                ", rooms=" + rooms +
                 ", reservationServices=" + reservationServices +
                 '}';
     }

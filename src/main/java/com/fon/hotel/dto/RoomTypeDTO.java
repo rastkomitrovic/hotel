@@ -53,6 +53,10 @@ public class RoomTypeDTO {
         this.description = description;
     }
 
+    public String getValueForLabel(){
+        return roomTypeName+" - cena po danu: "+pricePerDay;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

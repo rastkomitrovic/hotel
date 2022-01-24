@@ -53,6 +53,10 @@ public class RoomDTO {
         this.roomType = roomType;
     }
 
+    public String getValueForLabel(){
+        return ""+floor+""+roomNumber+" - "+roomType.toString();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

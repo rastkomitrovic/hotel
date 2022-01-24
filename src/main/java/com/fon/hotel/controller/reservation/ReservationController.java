@@ -6,9 +6,7 @@ import com.fon.hotel.editor.RoomTypeEditor;
 import com.fon.hotel.editor.ServiceEditor;
 import com.fon.hotel.editor.UserEditor;
 import com.fon.hotel.exception.HotelServiceException;
-import com.fon.hotel.service.ReservationService;
-import com.fon.hotel.service.ServiceService;
-import com.fon.hotel.service.UserService;
+import com.fon.hotel.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
@@ -37,6 +35,12 @@ public class ReservationController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoomTypeService roomTypeService;
+
+    @Autowired
+    private RoomService roomService;
 
     @Autowired
     private UserEditor userEditor;
@@ -84,6 +88,9 @@ public class ReservationController {
         try {
             model.addAttribute("reservation", new ReservationDTO());
             model.addAttribute("users", userService.getAll());
+            model.addAttribute("roomTypes",roomTypeService.getAll());
+            model.addAttribute("rooms", roomService.getAll());
+            model.addAttribute("services", serviceService.getAll());
             model.addAttribute("services", serviceService.getAll());
             return "newReservationPage";
         } catch (HotelServiceException ex) {
@@ -96,7 +103,7 @@ public class ReservationController {
     @PostMapping("/employee/saveReservation")
     public String saveReservation(@Valid @ModelAttribute("reservation") ReservationDTO reservationDTO, Model model, Principal principal, RedirectAttributes redirectAttributes) {
         try {
-            model.addAttribute("users", userService.getAll());
+            userService.getAll();
             model.addAttribute("infoMessage", "Uspesno ste kreirali novu rezervaciju");
             return "mainPage";
         } catch (HotelServiceException ex) {

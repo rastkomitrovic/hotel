@@ -51,12 +51,13 @@ CREATE TABLE `users` (
                          PRIMARY KEY (`user_id`),
                          UNIQUE KEY `UNIQUE` (`username`),
                          KEY `fk_user_role` (`role_id`),
-                         CONSTRAINT `fk_user_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON UPDATE CASCADE
+                         CONSTRAINT `fk_user_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `users` */
-insert into users(username,password,first_name,last_name,date_of_birth,passport_number,address,email,phone_number,role_id) values('boris','$2a$12$NWjYEKBZeu9dn5zETPZoW.gkl0fPwmenHKjtJae/URBshnZ1QUDCC','Boris','Zivkov','1996-07-05','1234512413','Marka Tajcevica 6b','boris.zivkov96@gmail.com','+381649138692',(Select role_id from role where role_name = 'ADMIN'));
-
+insert into users(username,password,first_name,last_name,date_of_birth,passport_number,address,email,phone_number,role_id) values('boris','$2a$12$2wic8lX0g1.LgrrMQtbj9uIdRkhD2fGs81LgaxSZW9oW//GFE/UnG','Boris','Zivkov','1996-07-05','1234512413','Marka Tajcevica 6b','boris.zivkov96@gmail.com','+381649138692',(Select role_id from role where role_name = 'ADMIN'));
+insert into users(username,password,first_name,last_name,date_of_birth,passport_number,address,email,phone_number,role_id) values('pera','$2a$12$mqLUoUF.niwPZq/UcISunu.mhcjMI2BAogDNKS2IwPaxgq3sSnMkm','Pera','Pera','1996-09-10','1234512414','Cara Dusana 7','pera.peric@gmail.com','+3816412345678',(Select role_id from role where role_name = 'EMPLOYEE'));
+insert into users(username,password,first_name,last_name,date_of_birth,passport_number,address,email,phone_number,role_id) values('zika','$2a$12$93rmBxsTf73vh.v6k.B6LOg5y9hUVTyRSIwptBoCq0QV.fK4WNJ42','Zika','Zikic','1996-01-10','1234512415','Cara Dusana 20','zika.zikic@gmail.com','+3816412456789',(Select role_id from role where role_name = 'USER'));
 /*Table structure for table `roomtype` */
 
 DROP TABLE IF EXISTS `roomtype`;
@@ -72,6 +73,12 @@ CREATE TABLE `roomtype` (
 
 /*Data for the table `roomtype` */
 
+INSERT INTO roomtype(room_type_name, price_per_day, description) values ('Jednokrevetna',3499.99,'Jednostavna soba sa jednim krevetom');
+INSERT INTO roomtype(room_type_name, price_per_day, description) values ('Dvokrevetna - Bracni krevet',5499.99,'Soba sa bracnim krevetom i malom terasom');
+INSERT INTO roomtype(room_type_name, price_per_day, description) values ('Dvokrevetna - Odvojeni kreveti',5499.99,'Soba sa dva zasebna kreveta i malom terasom');
+INSERT INTO roomtype(room_type_name, price_per_day, description) values ('Trokrevetna - Bracni krevet + 1',7499.99,'Soba sa bracnim krevetom i jos jednim dodatnim krevetom sa velikom terasom');
+INSERT INTO roomtype(room_type_name, price_per_day, description) values ('Trokrevetna - Odvojeni kreveti',7499.99,'Soba sa tri zasebna kreveta sa velikom terasom');
+
 /*Table structure for table `room` */
 
 DROP TABLE IF EXISTS `room`;
@@ -82,12 +89,29 @@ CREATE TABLE `room` (
                         `floor` int(11) NOT NULL,
                         `room_type_id` bigint(20) NOT NULL,
                         PRIMARY KEY (`room_id`),
-                        UNIQUE KEY `UNIQUE` (`room_number`),
                         KEY `fk_room_roomType` (`room_type_id`),
-                        CONSTRAINT `fk_room_roomType` FOREIGN KEY (`room_type_id`) REFERENCES `roomtype` (`room_type_id`) ON UPDATE CASCADE
+                        CONSTRAINT `fk_room_roomType` FOREIGN KEY (`room_type_id`) REFERENCES `roomtype` (`room_type_id`) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `room` */
+
+INSERT INTO room(room_number, floor, room_type_id) values (1,0,(Select room_type_id from roomtype where room_type_name='Jednokrevetna'));
+INSERT INTO room(room_number, floor, room_type_id) values (2,0,(Select room_type_id from roomtype where room_type_name='Dvokrevetna - Bracni krevet'));
+INSERT INTO room(room_number, floor, room_type_id) values (3,0,(Select room_type_id from roomtype where room_type_name='Dvokrevetna - Odvojeni kreveti'));
+INSERT INTO room(room_number, floor, room_type_id) values (4,0,(Select room_type_id from roomtype where room_type_name='Trokrevetna - Bracni krevet + 1'));
+INSERT INTO room(room_number, floor, room_type_id) values (5,0,(Select room_type_id from roomtype where room_type_name='Trokrevetna - Odvojeni kreveti'));
+
+INSERT INTO room(room_number, floor, room_type_id) values (1,1,(Select room_type_id from roomtype where room_type_name='Jednokrevetna'));
+INSERT INTO room(room_number, floor, room_type_id) values (2,1,(Select room_type_id from roomtype where room_type_name='Dvokrevetna - Bracni krevet'));
+INSERT INTO room(room_number, floor, room_type_id) values (3,1,(Select room_type_id from roomtype where room_type_name='Dvokrevetna - Odvojeni kreveti'));
+INSERT INTO room(room_number, floor, room_type_id) values (4,1,(Select room_type_id from roomtype where room_type_name='Trokrevetna - Bracni krevet + 1'));
+INSERT INTO room(room_number, floor, room_type_id) values (5,1,(Select room_type_id from roomtype where room_type_name='Trokrevetna - Odvojeni kreveti'));
+
+INSERT INTO room(room_number, floor, room_type_id) values (1,2,(Select room_type_id from roomtype where room_type_name='Jednokrevetna'));
+INSERT INTO room(room_number, floor, room_type_id) values (2,2,(Select room_type_id from roomtype where room_type_name='Dvokrevetna - Bracni krevet'));
+INSERT INTO room(room_number, floor, room_type_id) values (3,2,(Select room_type_id from roomtype where room_type_name='Dvokrevetna - Odvojeni kreveti'));
+INSERT INTO room(room_number, floor, room_type_id) values (4,2,(Select room_type_id from roomtype where room_type_name='Trokrevetna - Bracni krevet + 1'));
+INSERT INTO room(room_number, floor, room_type_id) values (5,2,(Select room_type_id from roomtype where room_type_name='Trokrevetna - Odvojeni kreveti'));
 
 /*Table structure for table `service` */
 
@@ -104,6 +128,12 @@ CREATE TABLE `service` (
 
 /*Data for the table `service` */
 
+INSERT INTO service(service_name, price_per_use, description) values ('Masaza',1499.99,'Opustajuca masaza');
+INSERT INTO service(service_name, price_per_use, description) values ('Sauna',4499.99,'Sauna za detoksikaciju');
+INSERT INTO service(service_name, price_per_use, description) values ('Slana soba',1499.99,null);
+INSERT INTO service(service_name, price_per_use, description) values ('Bazen',1499.99,'Olimpijski bazen duzine 100 metara');
+INSERT INTO service(service_name, price_per_use, description) values ('Teniski teren',2499.99,'Termin od sat vremena');
+
 /*Table structure for table `reservation` */
 
 DROP TABLE IF EXISTS `reservation`;
@@ -112,17 +142,31 @@ CREATE TABLE `reservation` (
   `reservation_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `start_date` date NOT NULL,
   `end_date` date NOT NULL,
+  `date_created` date NOT NULL,
   `total_sum` double NOT NULL,
   `note` varchar(255) DEFAULT NULL,
   `user_id` bigint(20) NOT NULL,
   `employee_id` bigint(20) NOT NULL,
-  `room_id` bigint(20) NOT NULL,
   PRIMARY KEY (`reservation_id`),
   KEY `fk_reservation_user` (`user_id`),
-  KEY `fk_reservation_room` (`room_id`),
-  CONSTRAINT `fk_reservation_room` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_reservation_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_reservation_employee_user` FOREIGN KEY (`employee_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE
+  CONSTRAINT `fk_reservation_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT `fk_reservation_employee_user` FOREIGN KEY (`employee_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+/*Data for the table `reservation` */
+
+/*Table structure for table `reservationroom` */
+
+DROP TABLE IF EXISTS `reservationroom`;
+
+CREATE TABLE `reservationroom` (
+    `reservation_id` bigint(20) NOT NULL,
+    `room_id` bigint(20) NOT NULL,
+    PRIMARY KEY (`reservation_id`,`room_id`),
+    KEY `fk_reservationroom_reservation` (`reservation_id`),
+    KEY `fk_reservationroom_room` (`room_id`),
+    CONSTRAINT `fk_reservationroom_reservation` FOREIGN KEY (`reservation_id`) REFERENCES `reservation` (`reservation_id`) ON UPDATE CASCADE ON DELETE CASCADE ,
+    CONSTRAINT `fk_reservationroom_room` FOREIGN KEY (`room_id`) REFERENCES `room` (`room_id`) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `reservation` */
@@ -138,7 +182,7 @@ CREATE TABLE `reservationservice` (
   PRIMARY KEY (`reservation_id`,`service_id`),
   KEY `fk_reservationservice_service` (`service_id`),
   CONSTRAINT `fk_reservationservice_reservation` FOREIGN KEY (`reservation_id`) REFERENCES `reservation` (`reservation_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_reservationservice_service` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON UPDATE CASCADE
+  CONSTRAINT `fk_reservationservice_service` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `reservationservice` */
@@ -146,6 +190,7 @@ CREATE TABLE `reservationservice` (
 
 /*Database destruction */
 DROP TABLE iF EXISTS `reservationservice`;
+DROP TABLE IF EXISTS `reservationroom`;
 DROP TABLE IF EXISTS `reservation`;
 DROP TABLE IF EXISTS `service`;
 DROP TABLE IF EXISTS `room`;

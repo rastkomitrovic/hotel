@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Profil</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
 <%@include file="components/header.jsp" %>

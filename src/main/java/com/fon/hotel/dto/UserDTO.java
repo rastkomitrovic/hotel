@@ -170,7 +170,7 @@ public class UserDTO {
         this.role = role;
     }
 
-    public String getFullNameAndEmail(){
+    public String getValueForLabel(){
         return firstName+" "+lastName+" - "+email;
     }
 

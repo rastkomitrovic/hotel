@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Moje rezervacije</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
 <%@include file="components/header.jsp" %>
@@ -26,7 +27,7 @@
                     <th>Kreator rezervacije</th>
                     <th>Datum pocetka rezervacije</th>
                     <th>Datum zavrsetka rezer>>vacije</th>
-                    <th>Soba</th>
+                    <th>Sobe</th>
                     <th>Tip sobe</th>
                     <th>Usluge</th>
                     <th>Cena</th>
@@ -39,15 +40,18 @@
                                                                                       pattern="dd.MM.yyy"/></c:if></th>
                     <th><c:if test="${reservation.endDate ne null}"><fmt:formatDate value="${reservation.endDate}"
                                                                                     pattern="dd.MM.yyy"/></c:if></th>
-                    <th><c:if
-                            test="${reservation.room ne null}">Sprat:${reservation.room.floor}, Broj sobe:${reservation.room.roomNumber}</c:if></th>
-                    <th><c:if
-                            test="${reservation.room ne null && reservation.room.roomType ne null && reservation.room.roomType.roomTypeName ne null}">${reservation.room.roomType.roomTypeName}</c:if></th>
+                    <th>
+                        <c:if test="${reservation.rooms ne null}">
+                            <c:forEach var="room" items="${reservation.rooms}">
+                                <p>${room.valueForLabel}</p>
+                            </c:forEach>
+                        </c:if>
+                    </th>
                     <th><c:choose>
-                        <c:when test="${empty reservation.reservationServices}">Nema usluga</c:when>
+                        <c:when test="${not empty reservation.reservationServices}">Nema usluga</c:when>
                         <c:otherwise>
                             <c:forEach var="i" begin="0" end="${reservation.reservationServices.size()-2}">
-                                ${reservation.reservationServices.get(i).reservationServiceEmbeddedIdDTO.service.serviceName} - ${reservation.reservationServices.get(i).reservationServiceEmbeddedIdDTO.service.pricePerUse},
+                                ${reservation.reservationServices.get(i).reservationServiceEmbeddedIdDTO.service.serviceName} x${reservation.reservationServices.get(i).numberOfUsages} - ${reservation.reservationServices.get(i).reservationServiceEmbeddedIdDTO.service.pricePerUse * reservation.reservationServices.get(i).numberOfUsages},
                             </c:forEach>
                             ${reservation.reservationServices.get(reservation.reservationServices.size()-1).reservationServiceEmbeddedIdDTO.service.serviceName} - ${reservation.reservationServices.get(reservation.reservationServices.size()-1).reservationServiceEmbeddedIdDTO.service.pricePerUse}
                         </c:otherwise>

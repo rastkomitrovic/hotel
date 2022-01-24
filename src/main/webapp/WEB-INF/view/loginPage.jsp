@@ -9,7 +9,7 @@
     <form:form action="${pageContext.request.contextPath}/performLogin" modelAttribute="user"
                method="post"> <!-- onsubmit maybe -->
 
-        <label for="username">Korisnicko ime</label>
+        <label for="username" >Korisnicko ime</label>
         <form:input path="username" id="username"/>
 
         <label for="password">Sifra</label>

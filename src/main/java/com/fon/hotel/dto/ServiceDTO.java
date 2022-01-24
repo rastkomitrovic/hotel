@@ -53,6 +53,10 @@ public class ServiceDTO {
         this.description = description;
     }
 
+    public String getValueForLabel(){
+        return serviceName + " - cena po upotrebi: "+pricePerUse;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

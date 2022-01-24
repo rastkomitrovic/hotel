@@ -1,6 +1,7 @@
 package com.fon.hotel.dto;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ReservationDTO {
@@ -11,6 +12,8 @@ public class ReservationDTO {
 
     private Date endDate;
 
+    private Date dateCreated;
+
     private double totalSum;
 
     private String note;
@@ -19,7 +22,7 @@ public class ReservationDTO {
 
     private UserDTO employee;
 
-    private RoomDTO room;
+    private List<RoomDTO> rooms;
 
     private List<ReservationServiceDTO> reservationServices;
 
@@ -27,16 +30,21 @@ public class ReservationDTO {
 
     }
 
-    public ReservationDTO(long reservationId, Date startDate, Date endDate, double totalSum, String note, UserDTO user, UserDTO employee, RoomDTO room, List<ReservationServiceDTO> reservationServices) {
+    public ReservationDTO(long reservationId, Date startDate, Date endDate, Date dateCreated, double totalSum, String note, UserDTO user, UserDTO employee, List<RoomDTO> rooms, List<ReservationServiceDTO> reservationServices) {
         this.reservationId = reservationId;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.dateCreated = dateCreated;
         this.totalSum = totalSum;
         this.note = note;
         this.user = user;
         this.employee = employee;
-        this.room = room;
+        this.rooms = rooms;
+        if(this.rooms == null)
+            this.rooms = new LinkedList<>();
         this.reservationServices = reservationServices;
+        if(this.reservationServices == null)
+            this.reservationServices = new LinkedList<>();
     }
 
     public long getReservationId() {
@@ -61,6 +69,14 @@ public class ReservationDTO {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public double getTotalSum() {
@@ -95,12 +111,12 @@ public class ReservationDTO {
         this.employee = employee;
     }
 
-    public RoomDTO getRoom() {
-        return room;
+    public List<RoomDTO> getRooms() {
+        return rooms;
     }
 
-    public void setRoom(RoomDTO room) {
-        this.room = room;
+    public void setRooms(List<RoomDTO> rooms) {
+        this.rooms = rooms;
     }
 
     public List<ReservationServiceDTO> getReservationServices() {
@@ -129,7 +145,7 @@ public class ReservationDTO {
                 ", note='" + note + '\'' +
                 ", user=" + user +
                 ", employee=" + employee +
-                ", room=" + room +
+                ", rooms=" + rooms +
                 ", reservationServices=" + reservationServices +
                 '}';
     }
