@@ -64,4 +64,9 @@ public class ServiceServiceImpl implements ServiceService {
     public Optional<ServiceDTO> findById(Long id) throws HotelServiceException{
         return serviceRepository.findById(id).map(serviceMapper.toDTOFunction());
     }
+
+    @Override
+    public Optional<ServiceDTO> findByName(String name) {
+        return Optional.ofNullable(serviceMapper.toDTO(serviceRepository.findByServiceName(name).get()));
+    }
 }

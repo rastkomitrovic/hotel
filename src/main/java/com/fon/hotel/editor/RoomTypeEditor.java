@@ -21,7 +21,6 @@ public class RoomTypeEditor extends PropertyEditorSupport {
             Long id = Long.parseLong(text);
             Optional<RoomTypeDTO> roomTypeDTO = roomTypeService.findById(id);
             roomTypeDTO.ifPresent(this::setValue);
-            throw new IllegalArgumentException("Exception at RoomTypeEditor.setAsText: No RoomType with id = "+id);
         }catch (HotelServiceException ex){
             ex.printStackTrace();
             throw new IllegalArgumentException("Exception at RoomTypeEditor.setAsText:"+ex.getMessage());

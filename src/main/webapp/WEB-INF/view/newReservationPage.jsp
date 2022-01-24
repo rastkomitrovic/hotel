@@ -34,16 +34,16 @@
 
         <label for="note">Napomena</label>
         <br/>
-        <form:textarea path="note" id="startDate"/>
+        <form:textarea path="note" id="note"/>
         <br/>
-        <form:errors path="startDate" cssStyle="color:red"/>
+        <form:errors path="note" cssStyle="color:red"/>
 
         <br/>
         <br/>
 
         <label for="user">Klijent</label>
         <br/>
-        <form:select  path="user" id="user"/>
+        <form:select path="user" id="user" items="${users}" itemLabel="fullNameAndEmail" itemValue="userId" />
         <br/>
         <form:errors path="user" cssStyle="color:red"/>
 
@@ -56,6 +56,7 @@
         <br/>
         <form:errors path="totalSum" cssStyle="color:red"/>
 
+        <button type="submit">Sacuvaj rezervaciju</button>
     </form:form>
 </div>
 

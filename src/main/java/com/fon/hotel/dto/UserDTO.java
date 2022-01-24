@@ -170,6 +170,10 @@ public class UserDTO {
         this.role = role;
     }
 
+    public String getFullNameAndEmail(){
+        return firstName+" "+lastName+" - "+email;
+    }
+
     public HotelUserDetails toHotelUserDetails() {
         return new HotelUserDetails(username, password, firstName, lastName, dateOfBirth, address, new HotelAuthority(role.getRoleName()));
     }

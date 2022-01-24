@@ -21,16 +21,10 @@ public class ServiceEditor extends PropertyEditorSupport {
             Long id = Long.parseLong(text);
             Optional<ServiceDTO> serviceDTO = serviceService.findById(id);
             serviceDTO.ifPresent(this::setValue);
-            throw new IllegalArgumentException("Exception at ServiceEditor.setAsText: no Service with id = "+id);
         }catch(HotelServiceException ex){
             ex.printStackTrace();
             throw new IllegalArgumentException("Exception at ServiceEditor.setAsText:"+ex.getMessage());
         }
     }
 
-    @Override
-    public Object getValue() {
-        Object o = super.getValue();
-        return o;
-    }
 }

@@ -61,7 +61,7 @@ public class LoginPageController {
     }
 
     @RequestMapping({"/logoutSuccess", "/login"})
-    public String loginPage(Model model) throws ParseException, HotelServiceException {
+    public String loginPage(Model model) {
         model.addAttribute("user", new UserDTO());
         return "loginPage";
     }

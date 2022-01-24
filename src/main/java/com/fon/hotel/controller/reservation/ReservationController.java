@@ -4,6 +4,7 @@ import com.fon.hotel.dto.*;
 import com.fon.hotel.editor.RoomEditor;
 import com.fon.hotel.editor.RoomTypeEditor;
 import com.fon.hotel.editor.ServiceEditor;
+import com.fon.hotel.editor.UserEditor;
 import com.fon.hotel.exception.HotelServiceException;
 import com.fon.hotel.service.ReservationService;
 import com.fon.hotel.service.ServiceService;
@@ -32,6 +33,15 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @Autowired
+    private ServiceService serviceService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserEditor userEditor;
+
+    @Autowired
     private RoomEditor roomEditor;
 
     @Autowired
@@ -39,12 +49,6 @@ public class ReservationController {
 
     @Autowired
     private ServiceEditor serviceEditor;
-
-    @Autowired
-    private ServiceService serviceService;
-
-    @Autowired
-    private UserService userService;
 
     @InitBinder
     public void initBinder(WebDataBinder webDataBinder) {
@@ -54,6 +58,7 @@ public class ReservationController {
         webDataBinder.registerCustomEditor(RoomDTO.class, this.roomEditor);
         webDataBinder.registerCustomEditor(RoomTypeDTO.class, this.roomTypeEditor);
         webDataBinder.registerCustomEditor(ReservationServiceDTO.class, this.serviceEditor);
+        webDataBinder.registerCustomEditor(UserDTO.class, this.userEditor);
     }
 
     @RequestMapping("myReservationsPage/{page}/{size}/{sort}")
@@ -61,7 +66,7 @@ public class ReservationController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
         Page<ReservationDTO> pageResult = reservationService.findAllForUser(pageable, principal.getName());
         model.addAttribute("isEmpty", pageResult.isEmpty());
-        if(pageResult.isEmpty())
+        if (pageResult.isEmpty())
             return "myReservationsPage";
 
         model.addAttribute("sort", sort);
@@ -74,23 +79,30 @@ public class ReservationController {
         return "myReservationsPage";
     }
 
-    @RequestMapping("/employee/newReservationPage")
-    public String newReservationPage(Model model, RedirectAttributes redirectAttributes){
-        try{
-            model.addAttribute("reservation",new ReservationDTO());
-            model.addAttribute("users",userService.getAll());
-            model.addAttribute("services",serviceService.getAll());
+    @RequestMapping("employee/newReservationPage")
+    public String newReservationPage(Model model, RedirectAttributes redirectAttributes) {
+        try {
+            model.addAttribute("reservation", new ReservationDTO());
+            model.addAttribute("users", userService.getAll());
+            model.addAttribute("services", serviceService.getAll());
             return "newReservationPage";
-        }catch(HotelServiceException ex){
-            redirectAttributes.addFlashAttribute("errorMessage",ex.getMessage());
+        } catch (HotelServiceException ex) {
+            ex.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
             return "redirect:/main";
         }
     }
 
     @PostMapping("/employee/saveReservation")
-    public String saveReservation(@Valid @ModelAttribute("reservation") ReservationDTO reservationDTO, Model model, Principal principal){
-
-        model.addAttribute("infoMessage","Uspesno ste kreirali novu rezervaciju");
-        return "mainPage";
+    public String saveReservation(@Valid @ModelAttribute("reservation") ReservationDTO reservationDTO, Model model, Principal principal, RedirectAttributes redirectAttributes) {
+        try {
+            model.addAttribute("users", userService.getAll());
+            model.addAttribute("infoMessage", "Uspesno ste kreirali novu rezervaciju");
+            return "mainPage";
+        } catch (HotelServiceException ex) {
+            ex.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/main";
+        }
     }
 }
