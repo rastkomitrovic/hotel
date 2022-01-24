@@ -12,5 +12,4 @@ import java.util.Optional;
 public interface ServiceRepository extends PagingAndSortingRepository<Service, Long> {
     Page<Service> findAllByServiceNameContaining(Pageable pageable, String param);
     boolean existsByServiceName(String serviceName);
-    Optional<Service> findByServiceName(String serviceName);
 }

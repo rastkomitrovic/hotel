@@ -6,5 +6,5 @@ import com.fon.hotel.service.generic.GenericPagingAndSortingService;
 import java.util.Optional;
 
 public interface ServiceService extends GenericPagingAndSortingService<ServiceDTO, Long> {
-    Optional<ServiceDTO> findByName(String name);
+
 }
