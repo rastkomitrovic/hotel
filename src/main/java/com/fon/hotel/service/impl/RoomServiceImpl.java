@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,5 +64,10 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Optional<RoomDTO> findById(Long id) throws HotelServiceException {
         return roomRepository.findById(id).map(roomMapper.toDTOFunction());
+    }
+
+    @Override
+    public List<RoomDTO> getAvailableRoomsForPeriod(Date startDate, Date endDate) {
+        return roomMapper.toDTO(roomRepository.findAllAvailable(startDate, endDate));
     }
 }

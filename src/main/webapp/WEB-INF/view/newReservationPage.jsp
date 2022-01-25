@@ -14,7 +14,8 @@
     <br/>
 </div>
 <div>
-    <form:form modelAttribute="reservation" action="${pageContext.request.contextPath}/employee/saveReservation" id="reservationForm">
+    <form:form modelAttribute="reservation" action="${pageContext.request.contextPath}/employee/saveReservation"
+               id="reservationForm">
 
         <label for="startDate">Pocetak rezervacije</label>
         <br/>
@@ -45,7 +46,7 @@
 
         <label for="user">Klijent</label>
         <br/>
-        <form:select path="user" id="user" items="${users}" itemLabel="valueForLabel" itemValue="userId" />
+        <form:select path="user" id="user" items="${users}" itemLabel="valueForLabel" itemValue="userId"/>
         <br/>
         <form:errors path="user" cssStyle="color:red"/>
 
@@ -57,47 +58,61 @@
             <label for="roomTypes">Tipovi soba</label>
             <select name="roomTypes" id="roomTypes">
                 <c:forEach var="roomType" items="${roomTypes}">
-                    <option value="${roomType.roomTypeId}">${roomType.valueForLabel}</option>
+                    <option value="${roomType.roomTypeId}"
+                            price-per-day="${roomType.pricePerDay}">${roomType.valueForLabel}</option>
                 </c:forEach>
             </select>
         </c:if>
 
-        <button type="button" onclick="addRoom(event)">Dodaj sobu izabranog tipa</button>
+        <button type="button" onclick="addRoom()">Dodaj sobu izabranog tipa</button>
 
         <div id="selectedRooms">
             <h3>Izabrane sobe</h3>
             <div id="infoSelectedRooms"></div>
-        <div id="hidden-inputs"></div>
+            <div id="hidden-inputs-rooms">
+                <c:if test="${not empty reservation.rooms}">
+                    <c:forEach var="room" items="${reservation.rooms}">
+                        <input checked hidden name="rooms" multiple type="checkbox"
+                               value="${room.roomType.roomTypeId}"
+                               value-for-label="${room.roomType.valueForLabel}"
+                               price-per-day="${room.roomType.pricePerDay}">
+                    </c:forEach>
+                </c:if>
+            </div>
+        </div>
+        <form:errors path="rooms" cssStyle="color:red"/>
+
+
+        <br/>
+        <br/>
+
+        <c:if test="${not empty services}">
+            <label for="services">Usluge</label>
+            <select name="services" id="services">
+                <c:forEach var="service" items="${services}">
+                    <option value="${service.serviceId}"
+                            price-per-use="${service.pricePerUse}">${service.valueForLabel}</option>
+                </c:forEach>
+            </select>
+        </c:if>
+
+        <button type="button" onclick="addService()">Dodaj uslugu</button>
+
+        <div id="selectedServices">
+            <h3>Izabrane usluge</h3>
+            <div id="infoSelectedServices"></div>
+            <div id="hidden-inputs-services">
+                <c:if test="${not empty reservation.reservationServices}">
+                    <c:forEach var="service" items="${reservation.reservationServices}">
+                        <input checked hidden name="reservationServices" multiple type="checkbox"
+                               value="${service.reservationServiceEmbeddedIdDTO.service.serviceId}"
+                               value-for-label="${service.reservationServiceEmbeddedIdDTO.service.valueForLabel}"
+                               price-per-use="${service.reservationServiceEmbeddedIdDTO.service.pricePerUse}">
+                    </c:forEach>
+                </c:if>
+            </div>
         </div>
 
-
-
-        <!--
-
-        <span> ovako odradi jstl tag - sustina klikne tip sobe i dodaj u tabeli levo prikaze se kolko takvih tipova soba ima a za svaku doda jedan ovaj span sa checked i hidden
-            <input id="rooms1" name="rooms" multiple="true" type="checkbox" value="1"><label for="rooms1">01 - Jednokrevetna</label>
-        </span>
-
-        <span>
-            <input checked hidden id="rooms333" name="rooms" multiple="true" type="checkbox" value="1">
-            <label for="rooms333">Sobaaa</label>
-        </span>
-        <span>
-            <input checked hidden id="rooms3333" name="rooms" multiple="true" type="checkbox" value="2">
-            <label for="rooms3333">Sobaaa</label>
-        </span>
-
-        -->
-        <br/>
-        <br/>
-
-        <label for="reservationServices">Usluge</label>
-        <form:select path="reservationServices" id="reservationServices" items="${services}" itemLabel="valueForLabel" itemValue="serviceId" multiple="true"/>
-        <!--
-            Slicna prica ovde samo sto u value mora ici id-kolicinaUpotrebe
-            Znaci izaberes uslugu i u polju pored upises broj upotreba i on
-            doda ovaj input samo sto mu value bude serviceId-numberOfUsages
-        -->
         <br/>
         <br/>
 

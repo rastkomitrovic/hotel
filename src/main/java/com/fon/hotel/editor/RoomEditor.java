@@ -15,9 +15,6 @@ import java.util.Optional;
 public class RoomEditor extends PropertyEditorSupport {
 
     @Autowired
-    private RoomService roomService;
-
-    @Autowired
     private RoomTypeService roomTypeService;
 
     @Override

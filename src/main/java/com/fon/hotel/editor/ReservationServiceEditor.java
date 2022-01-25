@@ -13,7 +13,7 @@ import java.beans.PropertyEditorSupport;
 import java.util.Optional;
 
 @Component
-public class ServiceEditor extends PropertyEditorSupport {
+public class ReservationServiceEditor extends PropertyEditorSupport {
 
     @Autowired
     private ServiceService serviceService;
@@ -21,13 +21,14 @@ public class ServiceEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         try{
-            String []strings = text.split("-");
-            Long id = Long.parseLong(strings[0]);
+            Long id = Long.parseLong(text);
             Optional<ServiceDTO> serviceDTO = serviceService.findById(id);
             if(serviceDTO.isPresent()){
-                ReservationServiceDTO reservationServiceDTO = new ReservationServiceDTO(new ReservationServiceEmbeddedIdDTO(null,serviceDTO.get()),0);
-                if(strings.length>1)
-                    reservationServiceDTO.setNumberOfUsages(Integer.parseInt(strings[1]));
+                ReservationServiceDTO reservationServiceDTO = new ReservationServiceDTO();
+                ReservationServiceEmbeddedIdDTO reservationServiceEmbeddedIdDTO = new ReservationServiceEmbeddedIdDTO();
+                reservationServiceEmbeddedIdDTO.setService(serviceDTO.get());
+                reservationServiceDTO.setReservationServiceEmbeddedIdDTO(reservationServiceEmbeddedIdDTO);
+                reservationServiceDTO.setNumberOfUsages(1);
                 setValue(reservationServiceDTO);
             }
         }catch(HotelServiceException ex){

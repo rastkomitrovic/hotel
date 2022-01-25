@@ -1,20 +1,73 @@
-let counter = 1
-let arraySelected = []
 
-function addRoom(e) {
-    e.preventDefault()
+let arraySelectedRooms = []
+
+let arraySelectedServices = []
+
+window.onload = function () {
+    let listRooms = document.getElementsByName("rooms")
+    listRooms.forEach(el =>{
+        const object = {
+            id: parseInt(el.value),
+            textValue: el.getAttribute("value-for-label"),
+            numberValue: 1,
+            pricePerDay: parseFloat(el.getAttribute("price-per-day"))
+        }
+
+        let notFound = true
+
+        arraySelectedRooms.forEach(el => {
+            if (el.id === object.id) {
+                el.numberValue++
+                notFound = false
+            }
+        })
+
+        if (notFound) {
+            arraySelectedRooms.push(object)
+        }
+    })
+
+    let listServices = document.getElementsByName("reservationServices")
+    listRooms.forEach(el =>{
+        const object = {
+            id: parseInt(el.value),
+            textValue: el.getAttribute("value-for-label"),
+            numberValue: 1,
+            pricePerDay: parseFloat(el.getAttribute("price-per-use"))
+        }
+
+        let notFound = true
+
+        arraySelectedServices.forEach(el => {
+            if (el.id === object.id) {
+                el.numberValue++
+                notFound = false
+            }
+        })
+
+        if (notFound) {
+            arraySelectedServices.push(object)
+        }
+    })
+
+    createViewForSelectedRooms()
+    createViewForSelectedServices()
+}
+function addRoom() {
+    //e.preventDefault() // e je bio parametar addRoom funkcije i na jsp-u se prosledjuje kao event
     const select = document.getElementById("roomTypes")
     const selectedText = select.options[select.selectedIndex].innerText
 
     const object = {
         id: parseInt(select.value),
         textValue: selectedText,
-        numberValue: 1
+        numberValue: 1,
+        pricePerDay: parseFloat(select.options[select.selectedIndex].getAttribute("price-per-day"))
     }
 
     let notFound = true
 
-    arraySelected.forEach(el => {
+    arraySelectedRooms.forEach(el => {
         if (el.id === object.id) {
             el.numberValue++
             notFound = false
@@ -22,62 +75,137 @@ function addRoom(e) {
     })
 
     if (notFound) {
-        arraySelected.push(object)
+        arraySelectedRooms.push(object)
     }
     createViewForSelectedRooms()
-    recreateHiddenInputs()
+    recreateHiddenInputsForRooms()
 }
 
 function createViewForSelectedRooms() {
-    document.getElementById("infoSelectedRooms").innerHTML= ''
+    document.getElementById("infoSelectedRooms").innerHTML = ''
     let str = ''
-    arraySelected.forEach(el => {
-        str+= `<div>
+    arraySelectedRooms.forEach(el => {
+        str += `<div>
                 <div class="info">
-                    ${el.textValue} - ${el.numberValue}
+                    ${el.textValue} - X${el.numberValue}
                </div>
                <div class="actions">
-                    <button type="button" onclick="changeType(${el.id}, 'add')">plus</button>
-                    <button type="button" onclick="changeType(${el.id},'minus')">minus</button>
+                    <button type="button" onclick="changeTypeRooms(${el.id}, 'add')">plus</button>
+                    <button type="button" onclick="changeTypeRooms(${el.id},'minus')">minus</button>
                </div>
                </div>`
     })
-    document.getElementById("infoSelectedRooms").innerHTML+= str
+    document.getElementById("infoSelectedRooms").innerHTML += str
 }
 
-function changeType(elId,type) {
-    arraySelected.forEach( (el, i) =>{
-        if(el.id === elId){
-            if(type ==='add'){
+function changeTypeRooms(elId, type) {
+    arraySelectedRooms.forEach((el, i) => {
+        if (el.id === elId) {
+            if (type === 'add') {
                 el.numberValue++
-            }else{
+            } else {
                 el.numberValue--
-                if(el.numberValue<=0)
-                    arraySelected.splice(i, 1)
+                if (el.numberValue <= 0)
+                    arraySelectedRooms.splice(i, 1)
             }
         }
     })
 
     createViewForSelectedRooms()
-    recreateHiddenInputs()
+    recreateHiddenInputsForRooms()
 }
 
-function recreateHiddenInputs() {
-    document.getElementById("hidden-inputs").innerHTML = ""
+function recreateHiddenInputsForRooms() {
+    document.getElementById("hidden-inputs-rooms").innerHTML = ""
 
-    arraySelected.forEach(el =>{
-        //const selected =`<input checked hidden id="rooms${counter}" name="rooms" multiple="true" type="checkbox" value="${select.value}">`
-        for(let i=0; i<el.numberValue;i++){
+    arraySelectedRooms.forEach(el => {
+        for (let i = 0; i < el.numberValue; i++) {
             const input = document.createElement("input")
             input.setAttribute("checked", "")
             input.setAttribute("hidden", "")
-            input.setAttribute("id", `rooms${counter}`)
             input.setAttribute("name", "rooms")
+            input.setAttribute("multiple", "")
+            input.setAttribute("type", "checkbox")
+            input.setAttribute("value", `${el.id}`)
+            document.querySelector("#hidden-inputs-rooms").appendChild(input)
+        }
+    })
+}
+
+function addService() {
+    const select = document.getElementById("services")
+    const selectedText = select.options[select.selectedIndex].innerText
+
+    const object = {
+        id: parseInt(select.value),
+        textValue: selectedText,
+        numberValue: 1,
+        pricePerDay: parseFloat(select.options[select.selectedIndex].getAttribute("price-per-use"))
+    }
+
+    let notFound = true
+
+    arraySelectedServices.forEach(el => {
+        if (el.id === object.id) {
+            el.numberValue++
+            notFound = false
+        }
+    })
+
+    if (notFound) {
+        arraySelectedServices.push(object)
+    }
+    createViewForSelectedServices()
+    recreateHiddenInputsForServices()
+}
+
+function createViewForSelectedServices() {
+    document.getElementById("infoSelectedServices").innerHTML = ''
+    let str = ''
+    arraySelectedServices.forEach(el => {
+        str += `<div>
+                <div class="info">
+                    ${el.textValue} - X${el.numberValue}
+               </div>
+               <div class="actions">
+                    <button type="button" onclick="changeTypeServices(${el.id}, 'add')">plus</button>
+                    <button type="button" onclick="changeTypeServices(${el.id},'minus')">minus</button>
+               </div>
+               </div>`
+    })
+    document.getElementById("infoSelectedServices").innerHTML += str
+}
+
+function changeTypeServices(elId, type) {
+    arraySelectedServices.forEach((el, i) => {
+        if (el.id === elId) {
+            if (type === 'add') {
+                el.numberValue++
+            } else {
+                el.numberValue--
+                if (el.numberValue <= 0)
+                    arraySelectedServices.splice(i, 1)
+            }
+        }
+    })
+
+    createViewForSelectedServices()
+    recreateHiddenInputsForServices()
+}
+
+function recreateHiddenInputsForServices() {
+    document.getElementById("hidden-inputs-services").innerHTML = ""
+
+    arraySelectedServices.forEach(el => {
+        for (let i = 0; i < el.numberValue; i++) {
+            const input = document.createElement("input")
+            input.setAttribute("checked", "")
+            input.setAttribute("hidden", "")
+            input.setAttribute("name", "reservationServices")
             input.setAttribute("multiple", "true")
             input.setAttribute("type", "checkbox")
             input.setAttribute("value", `${el.id}`)
-            counter++
-            document.querySelector("#hidden-inputs").appendChild(input)
+            document.querySelector("#hidden-inputs-services").appendChild(input)
         }
     })
 }
