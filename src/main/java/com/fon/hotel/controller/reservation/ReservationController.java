@@ -4,6 +4,8 @@ import com.fon.hotel.dto.*;
 import com.fon.hotel.editor.*;
 import com.fon.hotel.exception.HotelServiceException;
 import com.fon.hotel.service.*;
+import com.fon.hotel.session.SessionConstants;
+import com.fon.hotel.session.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
@@ -61,7 +63,7 @@ public class ReservationController {
     private DateEditor dateEditor;
 
     @Autowired
-    private HttpSession httpSession;
+    private SessionService sessionService;
 
     @InitBinder
     public void initBinder(WebDataBinder webDataBinder) {
@@ -93,7 +95,7 @@ public class ReservationController {
     @RequestMapping("employee/newReservationPage")
     public String newReservationPage(Model model, RedirectAttributes redirectAttributes) {
         try {
-            setModelAttributesForNewReservation(model,new ReservationDTO());
+            setModelAttributesForNewReservation(model, new ReservationDTO());
             return "newReservationPage";
         } catch (HotelServiceException ex) {
             ex.printStackTrace();
@@ -103,11 +105,11 @@ public class ReservationController {
     }
 
     @PostMapping("/employee/saveReservation")
-    public String saveReservation(@Valid @ModelAttribute("reservation") ReservationDTO reservationDTO, BindingResult bindingResult, Model model, Principal principal, RedirectAttributes redirectAttributes) throws HotelServiceException{
+    public String saveReservation(@Valid @ModelAttribute("reservation") ReservationDTO reservationDTO, BindingResult bindingResult, Model model, Principal principal, RedirectAttributes redirectAttributes) throws HotelServiceException {
         try {
-            if(bindingResult.hasErrors()){
-                model.addAttribute("reservation",reservationDTO);
-                setModelAttributesForNewReservation(model,reservationDTO);
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("reservation", reservationDTO);
+                setModelAttributesForNewReservation(model, reservationDTO);
                 return "newReservationPage";
             }
             validateDatesForReservation(reservationDTO);
@@ -119,91 +121,68 @@ public class ReservationController {
             return "redirect:/main";
         } catch (HotelServiceException ex) {
             ex.printStackTrace();
-            setModelAttributesForNewReservation(model,reservationDTO);
+            setModelAttributesForNewReservation(model, reservationDTO);
             model.addAttribute("reservation", reservationDTO);
             model.addAttribute("errorMessage", ex.getMessage());
             return "newReservationPage";
         }
     }
 
-    private void setModelAttributesForNewReservation(Model model, ReservationDTO reservationDTO) throws HotelServiceException{
-        List<UserDTO> users;
-        List<RoomTypeDTO> roomTypes;
-        List<ServiceDTO> services;
-
-        if(httpSession.getAttribute("users")!=null){
-            users = (List<UserDTO>) httpSession.getAttribute("users");
-        }else{
-            users = userService.getAll();
-            httpSession.setAttribute("users",users);
-        }
-
-        if(httpSession.getAttribute("roomTypes")!=null){
-            roomTypes = (List<RoomTypeDTO>) httpSession.getAttribute("roomTypes");
-        }else{
-            roomTypes = roomTypeService.getAll();
-            httpSession.setAttribute("roomTypes",roomTypes);
-        }
-
-        if(httpSession.getAttribute("services")!=null){
-            services = (List<ServiceDTO>) httpSession.getAttribute("services");
-        }else{
-            services = serviceService.getAll();
-            httpSession.setAttribute("services",services);
-        }
-
+    private void setModelAttributesForNewReservation(Model model, ReservationDTO reservationDTO) throws HotelServiceException {
         model.addAttribute("reservation", reservationDTO);
-        model.addAttribute("users", users);
-        model.addAttribute("roomTypes",roomTypes);
-        model.addAttribute("services", services);
+        model.addAttribute("users",(List<UserDTO>) sessionService.getValue(SessionConstants.USERS, null));
+        model.addAttribute("roomTypes", (List<RoomTypeDTO>)sessionService.getValue(SessionConstants.ROOM_TYPES, null));
+        model.addAttribute("services", (List<ServiceDTO>)sessionService.getValue(SessionConstants.SERVICES, null));
     }
-    private void validateDatesForReservation(ReservationDTO reservationDTO) throws HotelServiceException{
-        if(reservationDTO.getStartDate().after(reservationDTO.getEndDate()))
+
+    private void validateDatesForReservation(ReservationDTO reservationDTO) throws HotelServiceException {
+        if (reservationDTO.getStartDate().after(reservationDTO.getEndDate()))
             throw new HotelServiceException("Datum pocetka rezervacije ne moze biti nakon datuma zavrsetka rezervacije");
         reservationDTO.setDateCreated(new Date());
     }
-    private void prepareReservationRooms(ReservationDTO reservationDTO) throws HotelServiceException{
-        if(reservationDTO.getRooms().isEmpty())
+
+    private void prepareReservationRooms(ReservationDTO reservationDTO) throws HotelServiceException {
+        if (reservationDTO.getRooms().isEmpty())
             throw new HotelServiceException("Niste izabrali nijednu sobu");
         List<RoomDTO> rooms = roomService.getAvailableRoomsForPeriod(reservationDTO.getStartDate(), reservationDTO.getEndDate());
         List<RoomDTO> roomsToSet = new LinkedList<>();
-        for(RoomDTO room: reservationDTO.getRooms()){
+        for (RoomDTO room : reservationDTO.getRooms()) {
             RoomDTO roomToRemove = null;
-            for(RoomDTO roomAvailable:rooms){
-                if(roomAvailable.getRoomType().equals(room.getRoomType())){
+            for (RoomDTO roomAvailable : rooms) {
+                if (roomAvailable.getRoomType().equals(room.getRoomType())) {
                     roomToRemove = roomAvailable;
                     roomsToSet.add(roomAvailable);
                     break;
                 }
             }
-            if(roomToRemove != null)
+            if (roomToRemove != null)
                 rooms.remove(roomToRemove);
         }
         reservationDTO.setRooms(roomsToSet);
     }
 
-    private void prepareReservationServices(ReservationDTO reservationDTO) throws HotelServiceException{
+    private void prepareReservationServices(ReservationDTO reservationDTO) throws HotelServiceException {
         List<ReservationServiceDTO> servicesToSet = new LinkedList<>();
-        for(ReservationServiceDTO reservationServiceDTO: reservationDTO.getReservationServices()){
+        for (ReservationServiceDTO reservationServiceDTO : reservationDTO.getReservationServices()) {
             boolean notFound = true;
-            for(ReservationServiceDTO existing: servicesToSet){
-                if(existing.getReservationServiceEmbeddedIdDTO().getService().equals(reservationServiceDTO.getReservationServiceEmbeddedIdDTO().getService())) {
+            for (ReservationServiceDTO existing : servicesToSet) {
+                if (existing.getReservationServiceEmbeddedIdDTO().getService().equals(reservationServiceDTO.getReservationServiceEmbeddedIdDTO().getService())) {
                     existing.setNumberOfUsages(existing.getNumberOfUsages() + 1);
                     notFound = false;
                 }
             }
-            if(notFound)
+            if (notFound)
                 servicesToSet.add(reservationServiceDTO);
         }
 
-        for(ReservationServiceDTO service:servicesToSet)
+        for (ReservationServiceDTO service : servicesToSet)
             service.getReservationServiceEmbeddedIdDTO().setReservation(reservationDTO);
         reservationDTO.setReservationServices(servicesToSet);
     }
 
-    private void setEmployee(ReservationDTO reservationDTO, Principal principal) throws HotelServiceException{
+    private void setEmployee(ReservationDTO reservationDTO, Principal principal) throws HotelServiceException {
         Optional<UserDTO> userDTO = userService.findByUsername(principal.getName());
-        if(!userDTO.isPresent())
+        if (!userDTO.isPresent())
             throw new HotelServiceException("Greska u verifikaciji trenutno ulogovanog korisinika");
         reservationDTO.setEmployee(userDTO.get());
     }
