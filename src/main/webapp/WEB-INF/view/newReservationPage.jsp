@@ -3,6 +3,7 @@
 <head>
     <title>Nova rezervacija</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css">
+    <script src="${pageContext.request.contextPath}/js/newReservationPage.js"></script>
 </head>
 <body>
 <%@include file="components/header.jsp" %>
@@ -13,7 +14,7 @@
     <br/>
 </div>
 <div>
-    <form:form modelAttribute="reservation" action="${pageContext.request.contextPath}/employee/saveReservation">
+    <form:form modelAttribute="reservation" action="${pageContext.request.contextPath}/employee/saveReservation" id="reservationForm">
 
         <label for="startDate">Pocetak rezervacije</label>
         <br/>
@@ -55,15 +56,22 @@
         <c:if test="${not empty roomTypes }">
             <label for="roomTypes">Tipovi soba</label>
             <select name="roomTypes" id="roomTypes">
-                <option value="show-all">Prikazi sve</option>
                 <c:forEach var="roomType" items="${roomTypes}">
-                    <option value="${roomType.roomTypeName}">${roomType.valueForLabel}</option>
+                    <option value="${roomType.roomTypeId}">${roomType.valueForLabel}</option>
                 </c:forEach>
             </select>
         </c:if>
 
-        <label for="rooms">Sobe</label>
-        <form:checkboxes path="rooms" id="rooms" items="${rooms}" itemLabel="valueForLabel" itemValue="roomId" multiple="true"/>
+        <button type="button" onclick="addRoom(event)">Dodaj sobu izabranog tipa</button>
+
+        <div id="selectedRooms">
+            <h3>Izabrane sobe</h3>
+            <div id="infoSelectedRooms"></div>
+        <div id="hidden-inputs"></div>
+        </div>
+
+
+
         <!--
 
         <span> ovako odradi jstl tag - sustina klikne tip sobe i dodaj u tabeli levo prikaze se kolko takvih tipova soba ima a za svaku doda jedan ovaj span sa checked i hidden

@@ -56,8 +56,8 @@ public class ReservationController {
 
     @InitBinder
     public void initBinder(WebDataBinder webDataBinder) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-ddd");
-        sdf.setLenient(true);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false);
         webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(sdf, false));
         webDataBinder.registerCustomEditor(RoomDTO.class, this.roomEditor);
         webDataBinder.registerCustomEditor(RoomTypeDTO.class, this.roomTypeEditor);
@@ -104,8 +104,8 @@ public class ReservationController {
     public String saveReservation(@Valid @ModelAttribute("reservation") ReservationDTO reservationDTO, Model model, Principal principal, RedirectAttributes redirectAttributes) {
         try {
             userService.getAll();
-            model.addAttribute("infoMessage", "Uspesno ste kreirali novu rezervaciju");
-            return "mainPage";
+            redirectAttributes.addFlashAttribute("infoMessage", "Uspesno ste kreirali novu rezervaciju");
+            return "redirect:/mainPage";
         } catch (HotelServiceException ex) {
             ex.printStackTrace();
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());

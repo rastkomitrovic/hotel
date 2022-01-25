@@ -35,6 +35,8 @@ public class ReservationDTO {
         this.startDate = startDate;
         this.endDate = endDate;
         this.dateCreated = dateCreated;
+        if(this.dateCreated == null)
+            this.dateCreated = new Date();
         this.totalSum = totalSum;
         this.note = note;
         this.user = user;
