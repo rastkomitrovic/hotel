@@ -3,6 +3,7 @@ package com.fon.hotel.service.impl;
 import com.fon.hotel.exception.HotelServiceException;
 import com.fon.hotel.dto.RoomDTO;
 import com.fon.hotel.mapper.RoomMapper;
+import com.fon.hotel.mapper.config.CycleAvoidingMappingContext;
 import com.fon.hotel.repository.RoomRepository;
 import com.fon.hotel.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,26 +28,26 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Page<RoomDTO> findPage(Pageable pageable) throws HotelServiceException {
-        return roomRepository.findAll(pageable).map(roomMapper.toDTOFunction());
+        return roomRepository.findAll(pageable).map(roomMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 
     @Override
     public Page<RoomDTO> searchPage(Pageable pageable, String param) throws HotelServiceException {
-        return roomRepository.findAllByParam(pageable, param).map(roomMapper.toDTOFunction());
+        return roomRepository.findAllByParam(pageable, param).map(roomMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 
     @Override
     public RoomDTO save(RoomDTO object) throws HotelServiceException {
         if (roomRepository.existsByRoomNumberAndFloor(object.getRoomNumber(), object.getFloor()) || roomRepository.existsById(object.getRoomId()))
             throw new HotelServiceException("Vec postoji soba sa tim brojem na tom spratu ili sa tim Id-em");
-        return roomMapper.toDTO(roomRepository.save(roomMapper.toDAO(object)));
+        return roomMapper.toDTO(roomRepository.save(roomMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
     public RoomDTO update(RoomDTO object) throws HotelServiceException {
         if (!roomRepository.existsByRoomNumberAndFloor(object.getRoomNumber(), object.getFloor()) || !roomRepository.existsById(object.getRoomId()))
             throw new HotelServiceException("Ne postoji soba sa tim brojem na tom spratu ili sa tim Id-em");
-        return roomMapper.toDTO(roomRepository.save(roomMapper.toDAO(object)));
+        return roomMapper.toDTO(roomRepository.save(roomMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
@@ -58,16 +59,16 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<RoomDTO> getAll() throws HotelServiceException {
-        return roomMapper.toDTO(roomRepository.findAll());
+        return roomMapper.toDTO(roomRepository.findAll(),new CycleAvoidingMappingContext());
     }
 
     @Override
     public Optional<RoomDTO> findById(Long id) throws HotelServiceException {
-        return roomRepository.findById(id).map(roomMapper.toDTOFunction());
+        return roomRepository.findById(id).map(roomMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 
     @Override
     public List<RoomDTO> getAvailableRoomsForPeriod(Date startDate, Date endDate) {
-        return roomMapper.toDTO(roomRepository.findAllAvailable(startDate, endDate));
+        return roomMapper.toDTO(roomRepository.findAllAvailable(startDate, endDate),new CycleAvoidingMappingContext());
     }
 }

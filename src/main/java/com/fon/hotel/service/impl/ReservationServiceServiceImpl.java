@@ -4,6 +4,7 @@ import com.fon.hotel.dao.ReservationServiceEmbeddedId;
 import com.fon.hotel.exception.HotelServiceException;
 import com.fon.hotel.dto.ReservationServiceDTO;
 import com.fon.hotel.mapper.ReservationServiceMapper;
+import com.fon.hotel.mapper.config.CycleAvoidingMappingContext;
 import com.fon.hotel.repository.ReservationRepository;
 import com.fon.hotel.repository.ReservationServiceRepository;
 import com.fon.hotel.service.ReservationServiceService;
@@ -29,7 +30,7 @@ public class ReservationServiceServiceImpl implements ReservationServiceService 
 
     @Override
     public List<ReservationServiceDTO> findAllByReservationId(long reservationId) {
-        return reservationServiceMapper.toDTO(reservationServiceRepository.findAllByReservationId(reservationId));
+        return reservationServiceMapper.toDTO(reservationServiceRepository.findAllByReservationId(reservationId),new CycleAvoidingMappingContext());
     }
 
     @Override
@@ -37,7 +38,7 @@ public class ReservationServiceServiceImpl implements ReservationServiceService 
         if (reservationServiceRepository.existsByReservationIdAndServiceId(object.getReservationServiceEmbeddedId().getReservation().getReservationId(), object.getReservationServiceEmbeddedId().getService().getServiceId()))
             throw new HotelServiceException("Vec postoji ova usluga za ovu rezervaciju");
         if (reservationRepository.existsById(object.getReservationServiceEmbeddedId().getReservation().getReservationId()))
-            return reservationServiceMapper.toDTO(reservationServiceRepository.save(reservationServiceMapper.toDAO(object)));
+            return reservationServiceMapper.toDTO(reservationServiceRepository.save(reservationServiceMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
         else
             throw new HotelServiceException("Ne postoji prosledjena rezervacija");
     }
@@ -46,23 +47,23 @@ public class ReservationServiceServiceImpl implements ReservationServiceService 
     public ReservationServiceDTO update(ReservationServiceDTO object) throws HotelServiceException {
         if (!reservationServiceRepository.existsByReservationIdAndServiceId(object.getReservationServiceEmbeddedId().getReservation().getReservationId(), object.getReservationServiceEmbeddedId().getService().getServiceId()))
             throw new HotelServiceException("Ne postoji izabrana usluga za izabranu rezervaciju");
-        return reservationServiceMapper.toDTO(reservationServiceRepository.save(reservationServiceMapper.toDAO(object)));
+        return reservationServiceMapper.toDTO(reservationServiceRepository.save(reservationServiceMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
     public void delete(ReservationServiceDTO object) throws HotelServiceException {
         if (!reservationServiceRepository.existsByReservationIdAndServiceId(object.getReservationServiceEmbeddedId().getReservation().getReservationId(), object.getReservationServiceEmbeddedId().getService().getServiceId()))
             throw new HotelServiceException("Ne postoji izabrana usluga za izabranu rezervaciju");
-        reservationServiceRepository.delete(reservationServiceMapper.toDAO(object));
+        reservationServiceRepository.delete(reservationServiceMapper.toDAO(object,new CycleAvoidingMappingContext()));
     }
 
     @Override
     public List<ReservationServiceDTO> getAll() throws HotelServiceException {
-        return reservationServiceMapper.toDTO(reservationServiceRepository.findAll());
+        return reservationServiceMapper.toDTO(reservationServiceRepository.findAll(),new CycleAvoidingMappingContext());
     }
 
     @Override
     public Optional<ReservationServiceDTO> findById(ReservationServiceEmbeddedId id) throws HotelServiceException {
-        return reservationServiceRepository.findById(id).map(reservationServiceMapper.toDTOFunction());
+        return reservationServiceRepository.findById(id).map(reservationServiceMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 }

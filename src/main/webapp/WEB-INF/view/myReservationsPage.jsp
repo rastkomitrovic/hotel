@@ -64,9 +64,9 @@
                             <c:when test="${reservation.reservationServices eq null or empty reservation.reservationServices}">Nema usluga</c:when>
                             <c:otherwise>
                                 <c:forEach var="i" begin="0" end="${reservation.reservationServices.size()-2}">
-                                    ${reservation.reservationServices.get(i).reservationServiceEmbeddedIdDTO.service.serviceName} x${reservation.reservationServices.get(i).numberOfUsages} - ${reservation.reservationServices.get(i).reservationServiceEmbeddedIdDTO.service.pricePerUse * reservation.reservationServices.get(i).numberOfUsages},
+                                    ${reservation.reservationServices.get(i).reservationServiceEmbeddedId.service.serviceName} x${reservation.reservationServices.get(i).numberOfUsages} - ${reservation.reservationServices.get(i).reservationServiceEmbeddedId.service.pricePerUse * reservation.reservationServices.get(i).numberOfUsages},
                                 </c:forEach>
-                                ${reservation.reservationServices.get(reservation.reservationServices.size()-1).reservationServiceEmbeddedIdDTO.service.serviceName} - ${reservation.reservationServices.get(reservation.reservationServices.size()-1).reservationServiceEmbeddedIdDTO.service.pricePerUse}
+                                ${reservation.reservationServices.get(reservation.reservationServices.size()-1).reservationServiceEmbeddedId.service.serviceName} - ${reservation.reservationServices.get(reservation.reservationServices.size()-1).reservationServiceEmbeddedId.service.pricePerUse}
                             </c:otherwise>
                         </c:choose></th>
                         <th>${reservation.totalSum}</th>

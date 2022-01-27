@@ -3,6 +3,7 @@ package com.fon.hotel.service.impl;
 import com.fon.hotel.exception.HotelServiceException;
 import com.fon.hotel.dto.ServiceDTO;
 import com.fon.hotel.mapper.ServiceMapper;
+import com.fon.hotel.mapper.config.CycleAvoidingMappingContext;
 import com.fon.hotel.repository.ServiceRepository;
 import com.fon.hotel.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,26 +27,26 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public Page<ServiceDTO> findPage(Pageable pageable) throws HotelServiceException {
-        return serviceRepository.findAll(pageable).map(serviceMapper.toDTOFunction());
+        return serviceRepository.findAll(pageable).map(serviceMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 
     @Override
     public Page<ServiceDTO> searchPage(Pageable pageable, String param) throws HotelServiceException {
-        return serviceRepository.findAllByServiceNameContaining(pageable, param).map(serviceMapper.toDTOFunction());
+        return serviceRepository.findAllByServiceNameContaining(pageable, param).map(serviceMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 
     @Override
     public ServiceDTO save(ServiceDTO object) throws HotelServiceException {
         if (serviceRepository.existsByServiceName(object.getServiceName()) || serviceRepository.existsById(object.getServiceId()))
             throw new HotelServiceException("Vec postoji usluga sa unetim nazivom ili Id-em");
-        return serviceMapper.toDTO(serviceRepository.save(serviceMapper.toDAO(object)));
+        return serviceMapper.toDTO(serviceRepository.save(serviceMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
     public ServiceDTO update(ServiceDTO object) throws HotelServiceException {
         if (!serviceRepository.existsByServiceName(object.getServiceName()) || serviceRepository.existsById(object.getServiceId()))
             throw new HotelServiceException("Ne postoji usluga sa unetim nazivom ili Id-em");
-        return serviceMapper.toDTO(serviceRepository.save(serviceMapper.toDAO(object)));
+        return serviceMapper.toDTO(serviceRepository.save(serviceMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
@@ -57,11 +58,11 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public List<ServiceDTO> getAll() throws HotelServiceException {
-        return serviceMapper.toDTO(serviceRepository.findAll());
+        return serviceMapper.toDTO(serviceRepository.findAll(),new CycleAvoidingMappingContext());
     }
 
     @Override
     public Optional<ServiceDTO> findById(Long id) throws HotelServiceException{
-        return serviceRepository.findById(id).map(serviceMapper.toDTOFunction());
+        return serviceRepository.findById(id).map(serviceMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 }

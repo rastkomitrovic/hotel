@@ -3,6 +3,7 @@ package com.fon.hotel.service.impl;
 import com.fon.hotel.exception.HotelServiceException;
 import com.fon.hotel.dto.RoleDTO;
 import com.fon.hotel.mapper.RoleMapper;
+import com.fon.hotel.mapper.config.CycleAvoidingMappingContext;
 import com.fon.hotel.repository.RoleRepository;
 import com.fon.hotel.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +27,14 @@ public class RoleServiceImpl implements RoleService {
     public RoleDTO save(RoleDTO object) throws HotelServiceException {
         if(roleRepository.existsByRoleName(object.getRoleName()) || roleRepository.existsById(object.getRoleId()))
             throw new HotelServiceException("Vec postoji rola sa tim nazivom ili Id-em");
-        return roleMapper.toDTO(roleRepository.save(roleMapper.toDAO(object)));
+        return roleMapper.toDTO(roleRepository.save(roleMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
     public RoleDTO update(RoleDTO object) throws HotelServiceException {
         if(!roleRepository.existsByRoleName(object.getRoleName()) || !roleRepository.existsById(object.getRoleId()))
             throw new HotelServiceException("Ne postoji rola sa tim nazivom ili Id-em");
-        return roleMapper.toDTO(roleRepository.save(roleMapper.toDAO(object)));
+        return roleMapper.toDTO(roleRepository.save(roleMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
@@ -45,11 +46,11 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleDTO> getAll() throws HotelServiceException {
-        return roleMapper.toDTO(roleRepository.findAll());
+        return roleMapper.toDTO(roleRepository.findAll(),new CycleAvoidingMappingContext());
     }
 
     @Override
     public Optional<RoleDTO> findById(Long id) throws HotelServiceException {
-        return roleRepository.findById(id).map(roleMapper.toDTOFunction());
+        return roleRepository.findById(id).map(roleMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 }

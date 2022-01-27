@@ -4,6 +4,7 @@ import com.fon.hotel.dao.User;
 import com.fon.hotel.exception.HotelServiceException;
 import com.fon.hotel.dto.UserDTO;
 import com.fon.hotel.mapper.UserMapper;
+import com.fon.hotel.mapper.config.CycleAvoidingMappingContext;
 import com.fon.hotel.repository.UserRepository;
 import com.fon.hotel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +26,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
+
     @Override
     public Page<UserDTO> findPage(Pageable pageable) throws HotelServiceException {
-        return userRepository.findAll(pageable).map(userMapper.toDTOFunction());
+        return userRepository.findAll(pageable).map(userMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 
     @Override
     public Page<UserDTO> searchPage(Pageable pageable, String param) throws HotelServiceException {
-        return userRepository.findAllByParam(pageable, param).map(userMapper.toDTOFunction());
+        return userRepository.findAllByParam(pageable, param).map(userMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 
     @Override
@@ -47,14 +49,14 @@ public class UserServiceImpl implements UserService {
             throw new HotelServiceException("Vec postoji korisnik sa unetim emailom");
         if(userRepository.existsByPhoneNumber(object.getPhoneNumber()))
             throw new HotelServiceException("Vec postoji korisnik sa unetim brojem telefona");
-        return userMapper.toDTO(userRepository.save(userMapper.toDAO(object)));
+        return userMapper.toDTO(userRepository.save(userMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
     public UserDTO update(UserDTO object) throws HotelServiceException {
         if (!userRepository.existsByUsername(object.getUsername()) || !userRepository.existsById(object.getUserId()))
             throw new HotelServiceException("Ne postoji korisnik sa unetim korisnickim imenom ili Id-em");
-        return userMapper.toDTO(userRepository.save(userMapper.toDAO(object)));
+        return userMapper.toDTO(userRepository.save(userMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
@@ -66,18 +68,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getAll() throws HotelServiceException {
-        return userMapper.toDTO(userRepository.findAll());
+        return userMapper.toDTO(userRepository.findAll(),new CycleAvoidingMappingContext());
     }
 
     @Override
     public Optional<UserDTO> findById(Long id) throws HotelServiceException {
-        return userRepository.findById(id).map(userMapper.toDTOFunction());
+        return userRepository.findById(id).map(userMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 
     @Override
     public Optional<UserDTO> findByUsername(String username) throws HotelServiceException{
         Optional<User> user = userRepository.findByUsername(username);
-        return user.map(value -> userMapper.toDTO(value));
+        return user.map(value -> userMapper.toDTO(value,new CycleAvoidingMappingContext()));
     }
 
     @Override

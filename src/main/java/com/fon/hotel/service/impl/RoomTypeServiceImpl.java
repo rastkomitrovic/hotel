@@ -4,6 +4,7 @@ import com.fon.hotel.dao.RoomType;
 import com.fon.hotel.exception.HotelServiceException;
 import com.fon.hotel.dto.RoomTypeDTO;
 import com.fon.hotel.mapper.RoomTypeMapper;
+import com.fon.hotel.mapper.config.CycleAvoidingMappingContext;
 import com.fon.hotel.repository.RoomTypeRepository;
 import com.fon.hotel.service.RoomTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,14 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     public RoomTypeDTO save(RoomTypeDTO object) throws HotelServiceException {
         if (roomTypeRepository.existsByRoomTypeName(object.getRoomTypeName()) || roomTypeRepository.existsById(object.getRoomTypeId()))
             throw new HotelServiceException("Vec postoji tip sobe sa tim nazivom ili Id-em");
-        return roomTypeMapper.toDTO(roomTypeRepository.save(roomTypeMapper.toDAO(object)));
+        return roomTypeMapper.toDTO(roomTypeRepository.save(roomTypeMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
     public RoomTypeDTO update(RoomTypeDTO object) throws HotelServiceException {
         if (!roomTypeRepository.existsByRoomTypeName(object.getRoomTypeName()) || !roomTypeRepository.existsById(object.getRoomTypeId()))
             throw new HotelServiceException("Vec postoji tip sobe sa tim nazivom ili Id-em");
-        return roomTypeMapper.toDTO(roomTypeRepository.save(roomTypeMapper.toDAO(object)));
+        return roomTypeMapper.toDTO(roomTypeRepository.save(roomTypeMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
@@ -46,12 +47,12 @@ public class RoomTypeServiceImpl implements RoomTypeService {
 
     @Override
     public List<RoomTypeDTO> getAll() throws HotelServiceException {
-        return roomTypeMapper.toDTO(roomTypeRepository.findAll());
+        return roomTypeMapper.toDTO(roomTypeRepository.findAll(),new CycleAvoidingMappingContext());
     }
 
     @Override
     public Optional<RoomTypeDTO> findById(Long id) throws HotelServiceException {
         Optional<RoomType> roomType = roomTypeRepository.findById(id);
-        return roomType.map(type -> roomTypeMapper.toDTO(type));
+        return roomType.map(type -> roomTypeMapper.toDTO(type,new CycleAvoidingMappingContext()));
     }
 }

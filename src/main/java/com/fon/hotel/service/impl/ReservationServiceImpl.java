@@ -9,6 +9,7 @@ import com.fon.hotel.dto.ReservationDTO;
 import com.fon.hotel.mapper.ReservationMapper;
 import com.fon.hotel.mapper.ReservationServiceEmbeddedIdMapper;
 import com.fon.hotel.mapper.ReservationServiceMapper;
+import com.fon.hotel.mapper.config.CycleAvoidingMappingContext;
 import com.fon.hotel.repository.ReservationRepository;
 import com.fon.hotel.repository.ReservationServiceRepository;
 import com.fon.hotel.service.ReservationService;
@@ -43,37 +44,37 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Page<ReservationDTO> findPage(Pageable pageable) throws HotelServiceException {
-        return reservationRepository.findAll(pageable).map(reservationMapper.toDTOFunction());
+        return reservationRepository.findAll(pageable).map(reservationMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 
     @Override
     public Page<ReservationDTO> searchPage(Pageable pageable, String param) throws HotelServiceException {
-        return reservationRepository.findAllByParam(pageable, param).map(reservationMapper.toDTOFunction());
+        return reservationRepository.findAllByParam(pageable, param).map(reservationMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 
     @Override
     public ReservationDTO save(ReservationDTO object) throws HotelServiceException {
         if (reservationRepository.existsById(object.getReservationId()))
             throw new HotelServiceException("Vec postoji rezervacija sa tim id-em");
-        Reservation reservation = reservationRepository.save(reservationMapper.toDAO(object));
-        /*List<com.fon.hotel.dao.ReservationService> list = new LinkedList<>();
+        Reservation reservation = reservationRepository.save(reservationMapper.toDAO(object,new CycleAvoidingMappingContext()));
+        List<com.fon.hotel.dao.ReservationService> list = new LinkedList<>();
         for (ReservationServiceDTO reservationServiceDTO : object.getReservationServices()) {
-            com.fon.hotel.dao.ReservationService rs = reservationServiceMapper.toDAO(reservationServiceDTO);
-            ReservationServiceEmbeddedId rsemId = reservationServiceEmbeddedIdMapper.toDAO(reservationServiceDTO.getReservationServiceEmbeddedId());
+            com.fon.hotel.dao.ReservationService rs = reservationServiceMapper.toDAO(reservationServiceDTO, new CycleAvoidingMappingContext());
+            ReservationServiceEmbeddedId rsemId = reservationServiceEmbeddedIdMapper.toDAO(reservationServiceDTO.getReservationServiceEmbeddedId(), new CycleAvoidingMappingContext());
             rs.setReservationServiceEmbeddedId(rsemId);
             rs.getReservationServiceEmbeddedId().setReservation(reservation);
             list.add(rs);
         }
         if (!list.isEmpty())
             reservationServiceRepository.saveAll(list);
-        return reservationMapper.toDTO(reservation);
+        return reservationMapper.toDTO(reservation, new CycleAvoidingMappingContext());
     }
 
     @Override
     public ReservationDTO update(ReservationDTO object) throws HotelServiceException {
         if (!reservationRepository.existsById(object.getReservationId()))
             throw new HotelServiceException("Ne postoji rezervacija sa tim id-em");
-        return reservationMapper.toDTO(reservationRepository.save(reservationMapper.toDAO(object)));
+        return reservationMapper.toDTO(reservationRepository.save(reservationMapper.toDAO(object,new CycleAvoidingMappingContext())),new CycleAvoidingMappingContext());
     }
 
     @Override
@@ -85,16 +86,16 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<ReservationDTO> getAll() throws HotelServiceException {
-        return reservationMapper.toDTO(reservationRepository.findAll());
+        return reservationMapper.toDTO(reservationRepository.findAll(),new CycleAvoidingMappingContext());
     }
 
     @Override
     public Optional<ReservationDTO> findById(Long id) throws HotelServiceException {
-        return reservationRepository.findById(id).map(reservationMapper.toDTOFunction());
+        return reservationRepository.findById(id).map(reservationMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 
     @Override
     public Page<ReservationDTO> findAllForUser(Pageable pageable, String username) {
-        return reservationRepository.findAllForUser(username, pageable).map(reservationMapper.toDTOFunction());
+        return reservationRepository.findAllForUser(username, pageable).map(reservationMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 }
