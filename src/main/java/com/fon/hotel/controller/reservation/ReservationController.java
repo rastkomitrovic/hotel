@@ -24,6 +24,9 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -116,7 +119,8 @@ public class ReservationController {
             prepareReservationRooms(reservationDTO);
             prepareReservationServices(reservationDTO);
             setEmployee(reservationDTO, principal);
-            //reservationService.save(reservationDTO);
+            calculatePrice(reservationDTO);
+            reservationService.save(reservationDTO);
             redirectAttributes.addFlashAttribute("infoMessage", "Uspesno ste kreirali novu rezervaciju");
             return "redirect:/main";
         } catch (HotelServiceException ex) {
@@ -127,6 +131,7 @@ public class ReservationController {
             return "newReservationPage";
         }
     }
+
 
     private void setModelAttributesForNewReservation(Model model, ReservationDTO reservationDTO) throws HotelServiceException {
         model.addAttribute("reservation", reservationDTO);
@@ -158,6 +163,8 @@ public class ReservationController {
             if (roomToRemove != null)
                 rooms.remove(roomToRemove);
         }
+        if(roomsToSet.size()!=reservationDTO.getRooms().size())
+            throw new HotelServiceException("Nema kapaciteta za sve sobe u izabranom periond");
         reservationDTO.setRooms(roomsToSet);
     }
 
@@ -185,5 +192,16 @@ public class ReservationController {
         if (!userDTO.isPresent())
             throw new HotelServiceException("Greska u verifikaciji trenutno ulogovanog korisinika");
         reservationDTO.setEmployee(userDTO.get());
+    }
+
+    private void calculatePrice(ReservationDTO reservationDTO) {
+        LocalDate dateFrom  = reservationDTO.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate dateTo = reservationDTO.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        int daysBetween = Period.between(dateFrom,dateTo).getDays();
+
+        for(RoomDTO roomDTO:reservationDTO.getRooms())
+            reservationDTO.setTotalSum(reservationDTO.getTotalSum()+daysBetween*roomDTO.getRoomType().getPricePerDay());
+        for(ReservationServiceDTO reservationServiceDTO:reservationDTO.getReservationServices())
+            reservationDTO.setTotalSum(reservationDTO.getTotalSum()+reservationServiceDTO.getNumberOfUsages()*reservationServiceDTO.getReservationServiceEmbeddedIdDTO().getService().getPricePerUse());
     }
 }

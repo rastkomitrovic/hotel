@@ -1,5 +1,8 @@
 package com.fon.hotel.dao;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -8,6 +11,7 @@ import java.util.Objects;
 public class ReservationService {
 
     @EmbeddedId
+    @Fetch(value = FetchMode.JOIN)
     private ReservationServiceEmbeddedId reservationServiceEmbeddedId;
 
     @Column(name = "number_of_usages", nullable = false)

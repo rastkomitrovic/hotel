@@ -19,6 +19,14 @@ public interface RoomRepository extends PagingAndSortingRepository<Room, Long> {
     @Query("Select r from Room r where r.roomNumber=:param or r.floor=:param or r.roomType.roomTypeName like concat('%',:param,'%')")
     Page<Room> findAllByParam(Pageable pageable, @Param("param") String param);
 
-    @Query(value = "SELECT * from room inner join roomtype r on room.room_type_id = r.room_type_id where room.room_id in (Select room_id from reservationroom inner join reservation r2 on reservationroom.reservation_id = r2.reservation_id where :startDate not between r2.start_date and r2.end_date and :endDate not between r2.start_date and r2.end_date)",nativeQuery = true)
+    @Query(value = "SELECT ro.*, rt.*\n" +
+            "FROM room ro INNER join roomtype rt on ro.room_type_id = rt.room_type_id left outer join (\n" +
+            "    select rr.room_id as room_id \n" +
+            "    from reservationroom rr join \n" +
+            "    reservation re on rr.reservation_id = re.reservation_id\n" +
+            "    where re.start_date <= :startDate and re.end_date >= :endDate\n" +
+            "    or re.start_date <= :startDate and re.end_date >= :endDate) rero\n" +
+            "ON ro.room_id = rero.room_id\n" +
+            "where rero.room_id is null",nativeQuery = true)
     List<Room> findAllAvailable(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

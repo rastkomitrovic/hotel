@@ -45,7 +45,6 @@ public class ReservationServiceEmbeddedIdDTO {
     @Override
     public String toString() {
         return "ReservationServiceEmbeddedIdDTO{" +
-                "reservationDTO=" + reservation +
                 ", serviceDTO=" + service +
                 '}';
     }

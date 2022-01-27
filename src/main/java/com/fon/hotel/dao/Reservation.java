@@ -3,6 +3,7 @@ package com.fon.hotel.dao;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "reservation")
@@ -36,21 +37,22 @@ public class Reservation {
     @JoinColumn(name = "employee_id", nullable = false)
     private User employee;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "reservationroom", joinColumns = @JoinColumn(name = "reservation_id", nullable = false), inverseJoinColumns = @JoinColumn(name = "room_id", nullable = false))
-    private List<Room> rooms;
+    private Set<Room> rooms;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reservationServiceEmbeddedId.reservation")
-    private List<ReservationService> reservationServices;
+    @OneToMany(mappedBy = "reservationServiceEmbeddedId.reservation")
+    private Set<ReservationService> reservationServices;
 
     public Reservation() {
 
     }
 
-    public Reservation(long reservationId, Date startDate, Date endDate, double totalSum, String note, User user, User employee, List<Room> rooms, List<ReservationService> reservationServices) {
+    public Reservation(long reservationId, Date startDate, Date endDate, Date dateCreated, double totalSum, String note, User user, User employee, Set<Room> rooms, Set<ReservationService> reservationServices) {
         this.reservationId = reservationId;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.dateCreated = dateCreated;
         this.totalSum = totalSum;
         this.note = note;
         this.user = user;
@@ -81,6 +83,14 @@ public class Reservation {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     public double getTotalSum() {
@@ -115,19 +125,19 @@ public class Reservation {
         this.employee = employee;
     }
 
-    public List<Room> getRooms() {
+    public Set<Room> getRooms() {
         return rooms;
     }
 
-    public void setRooms(List<Room> rooms) {
+    public void setRooms(Set<Room> rooms) {
         this.rooms = rooms;
     }
 
-    public List<ReservationService> getReservationServices() {
+    public Set<ReservationService> getReservationServices() {
         return reservationServices;
     }
 
-    public void setReservationServices(List<ReservationService> reservationServices) {
+    public void setReservationServices(Set<ReservationService> reservationServices) {
         this.reservationServices = reservationServices;
     }
 

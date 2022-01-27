@@ -28,7 +28,7 @@ window.onload = function () {
     })
 
     let listServices = document.getElementsByName("reservationServices")
-    listRooms.forEach(el =>{
+    listServices.forEach(el =>{
         const object = {
             id: parseInt(el.value),
             textValue: el.getAttribute("value-for-label"),
@@ -82,6 +82,7 @@ function addRoom() {
 }
 
 function createViewForSelectedRooms() {
+    console.log("aa")
     document.getElementById("infoSelectedRooms").innerHTML = ''
     let str = ''
     arraySelectedRooms.forEach(el => {
@@ -160,6 +161,7 @@ function addService() {
 }
 
 function createViewForSelectedServices() {
+    console.log("bb")
     document.getElementById("infoSelectedServices").innerHTML = ''
     let str = ''
     arraySelectedServices.forEach(el => {
