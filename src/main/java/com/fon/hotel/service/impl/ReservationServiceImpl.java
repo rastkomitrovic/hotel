@@ -55,16 +55,16 @@ public class ReservationServiceImpl implements ReservationService {
     public ReservationDTO save(ReservationDTO object) throws HotelServiceException {
         if (reservationRepository.existsById(object.getReservationId()))
             throw new HotelServiceException("Vec postoji rezervacija sa tim id-em");
-        Reservation reservation =reservationRepository.save(reservationMapper.toDAO(object));
-        List<com.fon.hotel.dao.ReservationService> list = new LinkedList<>();
-        for(ReservationServiceDTO reservationServiceDTO:object.getReservationServices()){
+        Reservation reservation = reservationRepository.save(reservationMapper.toDAO(object));
+        /*List<com.fon.hotel.dao.ReservationService> list = new LinkedList<>();
+        for (ReservationServiceDTO reservationServiceDTO : object.getReservationServices()) {
             com.fon.hotel.dao.ReservationService rs = reservationServiceMapper.toDAO(reservationServiceDTO);
-            ReservationServiceEmbeddedId rsemId = reservationServiceEmbeddedIdMapper.toDAO(reservationServiceDTO.getReservationServiceEmbeddedIdDTO());
+            ReservationServiceEmbeddedId rsemId = reservationServiceEmbeddedIdMapper.toDAO(reservationServiceDTO.getReservationServiceEmbeddedId());
             rs.setReservationServiceEmbeddedId(rsemId);
             rs.getReservationServiceEmbeddedId().setReservation(reservation);
             list.add(rs);
         }
-        if(!list.isEmpty())
+        if (!list.isEmpty())
             reservationServiceRepository.saveAll(list);
         return reservationMapper.toDTO(reservation);
     }
@@ -95,6 +95,6 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Page<ReservationDTO> findAllForUser(Pageable pageable, String username) {
-        return reservationRepository.findAllForUser(pageable, username).map(reservationMapper.toDTOFunction());
+        return reservationRepository.findAllForUser(username, pageable).map(reservationMapper.toDTOFunction());
     }
 }

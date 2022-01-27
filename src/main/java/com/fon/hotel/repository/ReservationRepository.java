@@ -23,9 +23,9 @@ public interface ReservationRepository extends PagingAndSortingRepository<Reserv
     //countQuery = "Select count(*) from reservation inner join users u on reservation.employee_id = u.user_id where u.username=:username"/*"Select COUNT(*) from reservation r inner join users u on r.employee_id = u.user_id left join reservationservice rs on rs.reservation_id = r.reservation_id left outer join service s on rs.service_id = s.service_id inner join reservationroom rr on r.reservation_id =rr.reservation_id inner join room ro on rr.room_id = ro.room_id inner join roomtype rt on rt.room_type_id = ro.room_type_id inner join users uu on r.user_id = uu.user_id where uu.username=:username"*/,
     //nativeQuery = true)
 
-    @Query(value = "select r from Reservation r join r.user join r.reservationServices join  r.employee join r.rooms where r.user.username=:username",
-    countQuery = "select count (r) from Reservation r join  r.user where r.user.username=:username")
-    Page<Reservation> findAllForUser(Pageable pageable, @Param("username") String username);
+    @Query(value = "select r from Reservation r where r.user.username=:username",
+    countQuery = "select count (r) from Reservation r where r.user.username=:username")
+    Page<Reservation> findAllForUser(@Param("username") String username, Pageable pageable);
 
 
 }

@@ -34,9 +34,9 @@ public class ReservationServiceServiceImpl implements ReservationServiceService 
 
     @Override
     public ReservationServiceDTO save(ReservationServiceDTO object) throws HotelServiceException {
-        if (reservationServiceRepository.existsByReservationIdAndServiceId(object.getReservationServiceEmbeddedIdDTO().getReservation().getReservationId(), object.getReservationServiceEmbeddedIdDTO().getService().getServiceId()))
+        if (reservationServiceRepository.existsByReservationIdAndServiceId(object.getReservationServiceEmbeddedId().getReservation().getReservationId(), object.getReservationServiceEmbeddedId().getService().getServiceId()))
             throw new HotelServiceException("Vec postoji ova usluga za ovu rezervaciju");
-        if (reservationRepository.existsById(object.getReservationServiceEmbeddedIdDTO().getReservation().getReservationId()))
+        if (reservationRepository.existsById(object.getReservationServiceEmbeddedId().getReservation().getReservationId()))
             return reservationServiceMapper.toDTO(reservationServiceRepository.save(reservationServiceMapper.toDAO(object)));
         else
             throw new HotelServiceException("Ne postoji prosledjena rezervacija");
@@ -44,14 +44,14 @@ public class ReservationServiceServiceImpl implements ReservationServiceService 
 
     @Override
     public ReservationServiceDTO update(ReservationServiceDTO object) throws HotelServiceException {
-        if (!reservationServiceRepository.existsByReservationIdAndServiceId(object.getReservationServiceEmbeddedIdDTO().getReservation().getReservationId(), object.getReservationServiceEmbeddedIdDTO().getService().getServiceId()))
+        if (!reservationServiceRepository.existsByReservationIdAndServiceId(object.getReservationServiceEmbeddedId().getReservation().getReservationId(), object.getReservationServiceEmbeddedId().getService().getServiceId()))
             throw new HotelServiceException("Ne postoji izabrana usluga za izabranu rezervaciju");
         return reservationServiceMapper.toDTO(reservationServiceRepository.save(reservationServiceMapper.toDAO(object)));
     }
 
     @Override
     public void delete(ReservationServiceDTO object) throws HotelServiceException {
-        if (!reservationServiceRepository.existsByReservationIdAndServiceId(object.getReservationServiceEmbeddedIdDTO().getReservation().getReservationId(), object.getReservationServiceEmbeddedIdDTO().getService().getServiceId()))
+        if (!reservationServiceRepository.existsByReservationIdAndServiceId(object.getReservationServiceEmbeddedId().getReservation().getReservationId(), object.getReservationServiceEmbeddedId().getService().getServiceId()))
             throw new HotelServiceException("Ne postoji izabrana usluga za izabranu rezervaciju");
         reservationServiceRepository.delete(reservationServiceMapper.toDAO(object));
     }

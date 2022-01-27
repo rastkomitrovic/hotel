@@ -4,10 +4,10 @@ import com.fon.hotel.dto.*;
 import com.fon.hotel.editor.*;
 import com.fon.hotel.exception.HotelServiceException;
 import com.fon.hotel.service.*;
+import com.fon.hotel.service.impl.ReservationServiceImpl;
 import com.fon.hotel.session.SessionConstants;
 import com.fon.hotel.session.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,15 +15,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -36,7 +33,7 @@ import java.util.Optional;
 public class ReservationController {
 
     @Autowired
-    private ReservationService reservationService;
+    private ReservationServiceImpl reservationService;
 
     @Autowired
     private ServiceService serviceService;
@@ -173,7 +170,7 @@ public class ReservationController {
         for (ReservationServiceDTO reservationServiceDTO : reservationDTO.getReservationServices()) {
             boolean notFound = true;
             for (ReservationServiceDTO existing : servicesToSet) {
-                if (existing.getReservationServiceEmbeddedIdDTO().getService().equals(reservationServiceDTO.getReservationServiceEmbeddedIdDTO().getService())) {
+                if (existing.getReservationServiceEmbeddedId().getService().equals(reservationServiceDTO.getReservationServiceEmbeddedId().getService())) {
                     existing.setNumberOfUsages(existing.getNumberOfUsages() + 1);
                     notFound = false;
                 }
@@ -183,7 +180,7 @@ public class ReservationController {
         }
 
         for (ReservationServiceDTO service : servicesToSet)
-            service.getReservationServiceEmbeddedIdDTO().setReservation(reservationDTO);
+            service.getReservationServiceEmbeddedId().setReservation(reservationDTO);
         reservationDTO.setReservationServices(servicesToSet);
     }
 
@@ -202,6 +199,6 @@ public class ReservationController {
         for(RoomDTO roomDTO:reservationDTO.getRooms())
             reservationDTO.setTotalSum(reservationDTO.getTotalSum()+daysBetween*roomDTO.getRoomType().getPricePerDay());
         for(ReservationServiceDTO reservationServiceDTO:reservationDTO.getReservationServices())
-            reservationDTO.setTotalSum(reservationDTO.getTotalSum()+reservationServiceDTO.getNumberOfUsages()*reservationServiceDTO.getReservationServiceEmbeddedIdDTO().getService().getPricePerUse());
+            reservationDTO.setTotalSum(reservationDTO.getTotalSum()+reservationServiceDTO.getNumberOfUsages()*reservationServiceDTO.getReservationServiceEmbeddedId().getService().getPricePerUse());
     }
 }

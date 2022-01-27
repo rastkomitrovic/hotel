@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class ReservationServiceDTO {
 
-    private ReservationServiceEmbeddedIdDTO reservationServiceEmbeddedIdDTO;
+    private ReservationServiceEmbeddedIdDTO reservationServiceEmbeddedId;
 
     private int numberOfUsages;
 
@@ -12,17 +12,17 @@ public class ReservationServiceDTO {
 
     }
 
-    public ReservationServiceDTO(ReservationServiceEmbeddedIdDTO reservationServiceEmbeddedIdDTO, int numberOfUsages) {
-        this.reservationServiceEmbeddedIdDTO = reservationServiceEmbeddedIdDTO;
+    public ReservationServiceDTO(ReservationServiceEmbeddedIdDTO reservationServiceEmbeddedId, int numberOfUsages) {
+        this.reservationServiceEmbeddedId = reservationServiceEmbeddedId;
         this.numberOfUsages = numberOfUsages;
     }
 
-    public ReservationServiceEmbeddedIdDTO getReservationServiceEmbeddedIdDTO() {
-        return reservationServiceEmbeddedIdDTO;
+    public ReservationServiceEmbeddedIdDTO getReservationServiceEmbeddedId() {
+        return reservationServiceEmbeddedId;
     }
 
-    public void setReservationServiceEmbeddedIdDTO(ReservationServiceEmbeddedIdDTO reservationServiceEmbeddedIdDTO) {
-        this.reservationServiceEmbeddedIdDTO = reservationServiceEmbeddedIdDTO;
+    public void setReservationServiceEmbeddedId(ReservationServiceEmbeddedIdDTO reservationServiceEmbeddedId) {
+        this.reservationServiceEmbeddedId = reservationServiceEmbeddedId;
     }
 
     public int getNumberOfUsages() {
@@ -38,13 +38,13 @@ public class ReservationServiceDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ReservationServiceDTO that = (ReservationServiceDTO) o;
-        return Objects.equals(reservationServiceEmbeddedIdDTO, that.reservationServiceEmbeddedIdDTO);
+        return Objects.equals(reservationServiceEmbeddedId, that.reservationServiceEmbeddedId);
     }
 
     @Override
     public String toString() {
         return "ReservationServiceDTO{" +
-                "reservationServiceEmbeddedIdDTO=" + reservationServiceEmbeddedIdDTO +
+                "reservationServiceEmbeddedIdDTO=" + reservationServiceEmbeddedId +
                 ", numberOfUsages=" + numberOfUsages +
                 '}';
     }

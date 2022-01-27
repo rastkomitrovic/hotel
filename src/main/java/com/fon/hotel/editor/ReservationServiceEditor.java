@@ -27,7 +27,7 @@ public class ReservationServiceEditor extends PropertyEditorSupport {
                 ReservationServiceDTO reservationServiceDTO = new ReservationServiceDTO();
                 ReservationServiceEmbeddedIdDTO reservationServiceEmbeddedIdDTO = new ReservationServiceEmbeddedIdDTO();
                 reservationServiceEmbeddedIdDTO.setService(serviceDTO.get());
-                reservationServiceDTO.setReservationServiceEmbeddedIdDTO(reservationServiceEmbeddedIdDTO);
+                reservationServiceDTO.setReservationServiceEmbeddedId(reservationServiceEmbeddedIdDTO);
                 reservationServiceDTO.setNumberOfUsages(1);
                 setValue(reservationServiceDTO);
             }
