@@ -18,12 +18,6 @@
         <button type="submit">Uloguj se</button>
     </form:form>
 
-    <label>
-        <c:if test="${errorMessage ne null}">
-            <p>${errorMessage}</p>
-        </c:if>
-    </label>
-
     <a href="${pageContext.request.contextPath}/newUser">Registruj se</a>
 </body>
 </html>

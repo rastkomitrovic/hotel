@@ -32,7 +32,10 @@
                     <th>Tip sobe</th>
                     <th>Usluge</th>
                     <th>Cena</th>
+                    <th>Azurirano</th>
+                    <th>Azurirano od strane</th>
                     <th>Napomena</th>
+                    <th>Akcija</th>
                 </tr>
                 <c:forEach var="reservation" items="${reservations}">
                     <tr>
@@ -70,7 +73,25 @@
                             </c:otherwise>
                         </c:choose></th>
                         <th>${reservation.totalSum}</th>
+                        <th><c:choose>
+                            <c:when test="${reservation.editedAt ne null}">Azurirano:<fmt:formatDate value="${reservation.editedAt}" dateStyle="dd.MM.yyyy"/></c:when>
+                            <c:otherwise>Nije azurirano</c:otherwise>
+                        </c:choose></th>
+                        <th>
+                            <c:choose>
+                                <c:when test="${reservation.editedByUser ne null}">
+                                    <c:if test="${reservation.editedByUser.firstName ne null}">${reservation.editedByUser.firstName} </c:if>
+                                    <c:if test="${reservation.editedByUser.lastName ne null}">${reservation.editedByUser.lastName}</c:if>
+                                </c:when>
+                                <c:otherwise>Nije azurirano</c:otherwise>
+                            </c:choose>
+                        </th>
                         <th><c:if test="${reservation.note ne null}">${reservation.note}</c:if></th>
+                        <th>
+                            <a href="${pageContext.request.contextPath}/employee/editReservation/${reservation.reservationId}">Izmeni</a>
+                            <br>
+                            <a href="${pageContext.request.contextPath}/employee/deleteReservation/${reservation.reservationId}">Obrisi</a>
+                        </th>
                     </tr>
                 </c:forEach>
             </table>
@@ -78,7 +99,7 @@
         <div>
             <c:if test="${totalPages>1}">
                 <form:form style="display: inline"
-                           action="${pageContext.request.contextPath}/myReservationsPage/${currentPage-1}/${size}/${sort}"
+                           action="${baseUrl}/${currentPage-1}/${size}/${sort}"
                            method="get">
                     <button type="submit" class="results-prevnext-btn" <c:if test="${isFirstPage}">disabled</c:if>>
                         Prethodna
@@ -87,7 +108,7 @@
 
                 <c:forEach var="i" begin="1" end="${totalPages}">
                     <form:form style="display: inline"
-                               action="${pageContext.request.contextPath}/myReservationsPage/${i-1}/${size}/${sort}"
+                               action="${baseUrl}/${i-1}/${size}/${sort}"
                                method="get">
                         <button
                                 <c:if test="${i-1 eq currentPage}">disabled</c:if>
@@ -98,7 +119,7 @@
                 </c:forEach>
 
                 <form:form style="display: inline"
-                           action="${pageContext.request.contextPath}/myReservationsPage/${currentPage+1}/${size}/${sort}"
+                           action="${baseUrl}/${currentPage+1}/${size}/${sort}"
                            method="get">
                     <button type="submit" class="results-prevnext-btn"
                             <c:if test="${isLastPage}">disabled</c:if> >Sledeca

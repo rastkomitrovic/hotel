@@ -95,7 +95,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Page<ReservationDTO> findAllForUser(Pageable pageable, String username) {
+    public Page<ReservationDTO> findAllForUser(Pageable pageable, String username) throws HotelServiceException  {
         return reservationRepository.findAllForUser(username, pageable).map(reservationMapper.toDTOFunction(new CycleAvoidingMappingContext()));
     }
 }

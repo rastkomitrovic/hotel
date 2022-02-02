@@ -68,7 +68,12 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomDTO> getAvailableRoomsForPeriod(Date startDate, Date endDate) {
+    public List<RoomDTO> getAvailableRoomsForPeriod(Date startDate, Date endDate) throws HotelServiceException {
         return roomMapper.toDTO(roomRepository.findAllAvailable(startDate, endDate),new CycleAvoidingMappingContext());
+    }
+
+    @Override
+    public List<RoomDTO> findAllAvailableExcludingReservation(Date startDate, Date endDate, Long reservationId) throws HotelServiceException {
+        return roomMapper.toDTO(roomRepository.findAllAvailableExcludingReservation(startDate,endDate,reservationId),new CycleAvoidingMappingContext());
     }
 }

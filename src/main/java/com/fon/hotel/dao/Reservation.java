@@ -1,5 +1,7 @@
 package com.fon.hotel.dao;
 
+import org.mapstruct.Context;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +39,13 @@ public class Reservation {
     @JoinColumn(name = "employee_id", nullable = false)
     private User employee;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "edited_by",nullable = true)
+    private User editedByUser;
+
+    @Column(name = "edited_at",nullable = true)
+    private Date editedAt;
+
     @ManyToMany
     @JoinTable(name = "reservationroom", joinColumns = @JoinColumn(name = "reservation_id", nullable = false), inverseJoinColumns = @JoinColumn(name = "room_id", nullable = false))
     private Set<Room> rooms;
@@ -48,7 +57,7 @@ public class Reservation {
 
     }
 
-    public Reservation(long reservationId, Date startDate, Date endDate, Date dateCreated, double totalSum, String note, User user, User employee, Set<Room> rooms, Set<ReservationService> reservationServices) {
+    public Reservation(long reservationId, Date startDate, Date endDate, Date dateCreated, double totalSum, String note, User user, User employee, User editedByUser, Date editedAt, Set<Room> rooms, Set<ReservationService> reservationServices) {
         this.reservationId = reservationId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -57,6 +66,8 @@ public class Reservation {
         this.note = note;
         this.user = user;
         this.employee = employee;
+        this.editedByUser = editedByUser;
+        this.editedAt = editedAt;
         this.rooms = rooms;
         this.reservationServices = reservationServices;
     }
@@ -125,6 +136,22 @@ public class Reservation {
         this.employee = employee;
     }
 
+    public User getEditedByUser() {
+        return editedByUser;
+    }
+
+    public void setEditedByUser(User editedByUser) {
+        this.editedByUser = editedByUser;
+    }
+
+    public Date getEditedAt() {
+        return editedAt;
+    }
+
+    public void setEditedAt(Date editedAt) {
+        this.editedAt = editedAt;
+    }
+
     public Set<Room> getRooms() {
         return rooms;
     }
@@ -159,6 +186,8 @@ public class Reservation {
                 ", note='" + note + '\'' +
                 ", user=" + user +
                 ", employee=" + employee +
+                ", editedByUser=" + editedByUser +
+                ", editedAt=" + editedAt +
                 ", rooms=" + rooms +
                 ", reservationServices=" + reservationServices +
                 '}';

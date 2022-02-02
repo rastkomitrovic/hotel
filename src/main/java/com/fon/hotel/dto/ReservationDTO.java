@@ -1,5 +1,6 @@
 package com.fon.hotel.dto;
 
+import com.fon.hotel.dao.User;
 import com.fon.hotel.validator.annotation.PresentOrFuture;
 
 import javax.validation.constraints.NotNull;
@@ -31,6 +32,10 @@ public class ReservationDTO {
 
     private UserDTO employee;
 
+    private UserDTO editedByUser;
+
+    private Date editedAt;
+
     @NotNull(message = "Obavezno je izabrati barem jednu sobu")
     @Size(min = 1,message = "Obavezno je izabrati barem jednu sobu")
     private List<RoomDTO> rooms;
@@ -42,7 +47,7 @@ public class ReservationDTO {
         this.reservationServices = new LinkedList<>();
     }
 
-    public ReservationDTO(long reservationId, Date startDate, Date endDate, Date dateCreated, double totalSum, String note, UserDTO user, UserDTO employee, List<RoomDTO> rooms, List<ReservationServiceDTO> reservationServices) {
+    public ReservationDTO(long reservationId, Date startDate, Date endDate, Date dateCreated, double totalSum, String note, UserDTO user, UserDTO employee, UserDTO editedByUser, Date editedAt, List<RoomDTO> rooms, List<ReservationServiceDTO> reservationServices) {
         this.reservationId = reservationId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -53,6 +58,8 @@ public class ReservationDTO {
         this.note = note;
         this.user = user;
         this.employee = employee;
+        this.editedByUser = editedByUser;
+        this.editedAt = editedAt;
         this.rooms = rooms;
         if(this.rooms == null)
             this.rooms = new LinkedList<>();
@@ -125,6 +132,22 @@ public class ReservationDTO {
         this.employee = employee;
     }
 
+    public UserDTO getEditedByUser() {
+        return editedByUser;
+    }
+
+    public void setEditedByUser(UserDTO editedByUser) {
+        this.editedByUser = editedByUser;
+    }
+
+    public Date getEditedAt() {
+        return editedAt;
+    }
+
+    public void setEditedAt(Date editedAt) {
+        this.editedAt = editedAt;
+    }
+
     public List<RoomDTO> getRooms() {
         return rooms;
     }
@@ -159,6 +182,8 @@ public class ReservationDTO {
                 ", note='" + note + '\'' +
                 ", user=" + user +
                 ", employee=" + employee +
+                ", editedByUser=" + editedByUser +
+                ", editedAt=" + editedAt +
                 ", rooms=" + rooms +
                 ", reservationServices=" + reservationServices +
                 '}';

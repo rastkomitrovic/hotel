@@ -19,6 +19,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.time.LocalDate;
@@ -74,13 +75,38 @@ public class ReservationController {
         webDataBinder.registerCustomEditor(UserDTO.class, this.userEditor);
     }
 
-    @RequestMapping("myReservationsPage/{page}/{size}/{sort}")
-    private String myReservationsPage(Model model, Principal principal, @PathVariable int page, @PathVariable int size, @PathVariable String sort) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
-        Page<ReservationDTO> pageResult = reservationService.findAllForUser(pageable, principal.getName());
+    @RequestMapping("/myReservationsPage/{page}/{size}/{sort}")
+    private String myReservationsPage(Model model, Principal principal, @PathVariable int page, @PathVariable int size, @PathVariable String sort, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+        try {
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+            Page<ReservationDTO> pageResult = reservationService.findAllForUser(pageable, principal.getName());
+            setModelForReservationsOverviewPage(model, pageResult, sort, httpServletRequest.getContextPath() + "/myReservationsPage");
+            return "reservationsPage";
+        } catch (HotelServiceException ex) {
+            ex.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/main";
+        }
+    }
+
+    @RequestMapping("/employee/allReservations/{page}/{size}/{sort}")
+    public String allReservationsPage(Model model, @PathVariable int page, @PathVariable int size, @PathVariable String sort, HttpServletRequest httpServletRequest, RedirectAttributes redirectAttributes) {
+        try {
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sort).ascending());
+            Page<ReservationDTO> pageResult = reservationService.findPage(pageable);
+            setModelForReservationsOverviewPage(model, pageResult, sort, httpServletRequest.getContextPath() + "/myReservationsPage");
+            return "reservationsPage";
+        } catch (HotelServiceException ex) {
+            ex.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/main";
+        }
+    }
+
+    public void setModelForReservationsOverviewPage(Model model, Page<ReservationDTO> pageResult, String sort, String baseUrl) {
         model.addAttribute("isEmpty", pageResult.isEmpty());
         if (pageResult.isEmpty())
-            return "myReservationsPage";
+            return;
 
         model.addAttribute("sort", sort);
         model.addAttribute("totalNumberOfFoundElements", pageResult.getTotalElements());
@@ -89,13 +115,13 @@ public class ReservationController {
         model.addAttribute("totalPages", pageResult.getTotalPages());
         model.addAttribute("currentPage", pageResult.getNumber());
         model.addAttribute("reservations", pageResult.getContent());
-        return "myReservationsPage";
+        model.addAttribute("baseUrl", baseUrl);
     }
 
-    @RequestMapping("employee/newReservationPage")
+    @RequestMapping("/employee/newReservationPage")
     public String newReservationPage(Model model, RedirectAttributes redirectAttributes) {
         try {
-            setModelAttributesForNewReservation(model, new ReservationDTO());
+            setModelAttributesForReservation(model, new ReservationDTO());
             return "newReservationPage";
         } catch (HotelServiceException ex) {
             ex.printStackTrace();
@@ -109,32 +135,77 @@ public class ReservationController {
         try {
             if (bindingResult.hasErrors()) {
                 model.addAttribute("reservation", reservationDTO);
-                setModelAttributesForNewReservation(model, reservationDTO);
+                setModelAttributesForReservation(model, reservationDTO);
                 return "newReservationPage";
             }
             validateDatesForReservation(reservationDTO);
             prepareReservationRooms(reservationDTO);
             prepareReservationServices(reservationDTO);
-            setEmployee(reservationDTO, principal);
             calculatePrice(reservationDTO);
-            reservationService.save(reservationDTO);
-            redirectAttributes.addFlashAttribute("infoMessage", "Uspesno ste kreirali novu rezervaciju");
+            if (reservationDTO.getReservationId() <= 0) {
+                setEmployee(reservationDTO, principal);
+                reservationService.save(reservationDTO);
+                redirectAttributes.addFlashAttribute("infoMessage", "Uspesno ste kreirali novu rezervaciju");
+            } else {
+                setEditedByAndEditedAt(reservationDTO, principal);
+                reservationService.update(reservationDTO);
+                redirectAttributes.addFlashAttribute("infoMessage", "Uspesno ste izmenili rezervaciju");
+            }
+
             return "redirect:/main";
         } catch (HotelServiceException ex) {
             ex.printStackTrace();
-            setModelAttributesForNewReservation(model, reservationDTO);
+            setModelAttributesForReservation(model, reservationDTO);
             model.addAttribute("reservation", reservationDTO);
             model.addAttribute("errorMessage", ex.getMessage());
             return "newReservationPage";
         }
     }
 
+    private void setEditedByAndEditedAt(ReservationDTO reservationDTO, Principal principal) throws HotelServiceException {
+        Optional<UserDTO> userDTO = userService.findByUsername(principal.getName());
+        if (!userDTO.isPresent())
+            throw new HotelServiceException("Greska u verifikaciji trenutno ulogovanog korisinika");
+        reservationDTO.setEditedByUser(userDTO.get());
+        reservationDTO.setEditedAt(new Date());
+    }
 
-    private void setModelAttributesForNewReservation(Model model, ReservationDTO reservationDTO) throws HotelServiceException {
+    @RequestMapping("/employee/editReservation/{reservationId}")
+    public String updateReservationPage(@PathVariable("reservationId") Long reservationId, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Optional<ReservationDTO> reservationDTO = reservationService.findById(reservationId);
+            if (!reservationDTO.isPresent())
+                throw new HotelServiceException("Ne postoji rezervacija sa prosledjenim Id-om");
+            setModelAttributesForReservation(model, reservationDTO.get());
+            return "newReservationPage";
+        } catch (HotelServiceException ex) {
+            ex.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/main";
+        }
+    }
+
+
+    @RequestMapping("/employee/deleteReservation/{reservationId}")
+    public String deleteReservation(@PathVariable("reservationId") Long reservationId, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            ReservationDTO reservationDTO = new ReservationDTO();
+            reservationDTO.setReservationId(reservationId);
+            reservationService.delete(reservationDTO);
+            redirectAttributes.addFlashAttribute("infoMessage", "Uspesno ste obrisali rezervaciju");
+        } catch (HotelServiceException ex) {
+            ex.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        return "redirect:/main";
+    }
+
+
+    private void setModelAttributesForReservation(Model model, ReservationDTO reservationDTO) throws HotelServiceException {
         model.addAttribute("reservation", reservationDTO);
-        model.addAttribute("users",(List<UserDTO>) sessionService.getValue(SessionConstants.USERS, null));
-        model.addAttribute("roomTypes", (List<RoomTypeDTO>)sessionService.getValue(SessionConstants.ROOM_TYPES, null));
-        model.addAttribute("services", (List<ServiceDTO>)sessionService.getValue(SessionConstants.SERVICES, null));
+        model.addAttribute("users", (List<UserDTO>) sessionService.getValue(SessionConstants.USERS, null));
+        model.addAttribute("roomTypes", (List<RoomTypeDTO>) sessionService.getValue(SessionConstants.ROOM_TYPES, null));
+        model.addAttribute("services", (List<ServiceDTO>) sessionService.getValue(SessionConstants.SERVICES, null));
     }
 
     private void validateDatesForReservation(ReservationDTO reservationDTO) throws HotelServiceException {
@@ -146,7 +217,11 @@ public class ReservationController {
     private void prepareReservationRooms(ReservationDTO reservationDTO) throws HotelServiceException {
         if (reservationDTO.getRooms().isEmpty())
             throw new HotelServiceException("Niste izabrali nijednu sobu");
-        List<RoomDTO> rooms = roomService.getAvailableRoomsForPeriod(reservationDTO.getStartDate(), reservationDTO.getEndDate());
+        List<RoomDTO> rooms ;
+        if(reservationDTO.getReservationId()<=0)
+            rooms = roomService.getAvailableRoomsForPeriod(reservationDTO.getStartDate(), reservationDTO.getEndDate());
+        else
+            rooms = roomService.findAllAvailableExcludingReservation(reservationDTO.getStartDate(),reservationDTO.getEndDate(),reservationDTO.getReservationId());
         List<RoomDTO> roomsToSet = new LinkedList<>();
         for (RoomDTO room : reservationDTO.getRooms()) {
             RoomDTO roomToRemove = null;
@@ -160,7 +235,7 @@ public class ReservationController {
             if (roomToRemove != null)
                 rooms.remove(roomToRemove);
         }
-        if(roomsToSet.size()!=reservationDTO.getRooms().size())
+        if (roomsToSet.size() != reservationDTO.getRooms().size())
             throw new HotelServiceException("Nema kapaciteta za sve sobe u izabranom periond");
         reservationDTO.setRooms(roomsToSet);
     }
@@ -192,13 +267,13 @@ public class ReservationController {
     }
 
     private void calculatePrice(ReservationDTO reservationDTO) {
-        LocalDate dateFrom  = reservationDTO.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate dateFrom = reservationDTO.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate dateTo = reservationDTO.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        int daysBetween = Period.between(dateFrom,dateTo).getDays();
+        int daysBetween = Period.between(dateFrom, dateTo).getDays();
 
-        for(RoomDTO roomDTO:reservationDTO.getRooms())
-            reservationDTO.setTotalSum(reservationDTO.getTotalSum()+daysBetween*roomDTO.getRoomType().getPricePerDay());
-        for(ReservationServiceDTO reservationServiceDTO:reservationDTO.getReservationServices())
-            reservationDTO.setTotalSum(reservationDTO.getTotalSum()+reservationServiceDTO.getNumberOfUsages()*reservationServiceDTO.getReservationServiceEmbeddedId().getService().getPricePerUse());
+        for (RoomDTO roomDTO : reservationDTO.getRooms())
+            reservationDTO.setTotalSum(reservationDTO.getTotalSum() + daysBetween * roomDTO.getRoomType().getPricePerDay());
+        for (ReservationServiceDTO reservationServiceDTO : reservationDTO.getReservationServices())
+            reservationDTO.setTotalSum(reservationDTO.getTotalSum() + reservationServiceDTO.getNumberOfUsages() * reservationServiceDTO.getReservationServiceEmbeddedId().getService().getPricePerUse());
     }
 }

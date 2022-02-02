@@ -145,12 +145,15 @@ CREATE TABLE `reservation` (
   `date_created` date NOT NULL,
   `total_sum` double NOT NULL,
   `note` varchar(255) DEFAULT NULL,
+  `edited_at` date NULL,
   `user_id` bigint(20) NOT NULL,
   `employee_id` bigint(20) NOT NULL,
+  `edited_by` bigint(20) NULL,
   PRIMARY KEY (`reservation_id`),
   KEY `fk_reservation_user` (`user_id`),
   CONSTRAINT `fk_reservation_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE ON DELETE RESTRICT,
-  CONSTRAINT `fk_reservation_employee_user` FOREIGN KEY (`employee_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE ON DELETE RESTRICT
+  CONSTRAINT `fk_reservation_employee_user` FOREIGN KEY (`employee_id`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT `fk_reservation_edited_by_user` FOREIGN KEY (`edited_by`) REFERENCES `users` (`user_id`) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `reservation` */

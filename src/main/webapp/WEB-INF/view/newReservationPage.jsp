@@ -16,6 +16,7 @@
 <div>
     <form:form modelAttribute="reservation" action="${pageContext.request.contextPath}/employee/saveReservation"
                id="reservationForm">
+        <form:input path="reservationId" type="hidden"/>
 
         <label for="startDate">Pocetak rezervacije</label>
         <br/>
@@ -105,9 +106,9 @@
                 <c:if test="${not empty reservation.reservationServices}">
                     <c:forEach var="service" items="${reservation.reservationServices}">
                         <input checked hidden name="reservationServices" multiple type="checkbox"
-                               value="${service.reservationServiceEmbeddedIdDTO.service.serviceId}"
-                               value-for-label="${service.reservationServiceEmbeddedIdDTO.service.valueForLabel}"
-                               price-per-use="${service.reservationServiceEmbeddedIdDTO.service.pricePerUse}">
+                               value="${service.reservationServiceEmbeddedId.service.serviceId}"
+                               value-for-label="${service.reservationServiceEmbeddedId.service.valueForLabel}"
+                               price-per-use="${service.reservationServiceEmbeddedId.service.pricePerUse}">
                     </c:forEach>
                 </c:if>
             </div>
