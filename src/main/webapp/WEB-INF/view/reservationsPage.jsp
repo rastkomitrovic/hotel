@@ -74,7 +74,8 @@
                         </c:choose></th>
                         <th>${reservation.totalSum}</th>
                         <th><c:choose>
-                            <c:when test="${reservation.editedAt ne null}">Azurirano:<fmt:formatDate value="${reservation.editedAt}" dateStyle="dd.MM.yyyy"/></c:when>
+                            <c:when test="${reservation.editedAt ne null}">Azurirano:<fmt:formatDate
+                                    value="${reservation.editedAt}" dateStyle="dd.MM.yyyy"/></c:when>
                             <c:otherwise>Nije azurirano</c:otherwise>
                         </c:choose></th>
                         <th>
@@ -88,9 +89,11 @@
                         </th>
                         <th><c:if test="${reservation.note ne null}">${reservation.note}</c:if></th>
                         <th>
-                            <a href="${pageContext.request.contextPath}/employee/editReservation/${reservation.reservationId}">Izmeni</a>
-                            <br>
-                            <a href="${pageContext.request.contextPath}/employee/deleteReservation/${reservation.reservationId}">Obrisi</a>
+                            <sec:authorize access="hasAnyAuthority('ADMIN','EMPLOYEE')">
+                                <a href="${pageContext.request.contextPath}/employee/editReservation/${reservation.reservationId}">Izmeni</a>
+                                <br>
+                                <a href="${pageContext.request.contextPath}/employee/deleteReservation/${reservation.reservationId}">Obrisi</a>
+                            </sec:authorize>
                         </th>
                     </tr>
                 </c:forEach>

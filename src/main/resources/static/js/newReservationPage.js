@@ -52,6 +52,7 @@ window.onload = function () {
 
     createViewForSelectedRooms()
     createViewForSelectedServices()
+    setTotalPrice()
 }
 function addRoom() {
     //e.preventDefault() // e je bio parametar addRoom funkcije i na jsp-u se prosledjuje kao event
@@ -79,6 +80,7 @@ function addRoom() {
     }
     createViewForSelectedRooms()
     recreateHiddenInputsForRooms()
+    setTotalPrice()
 }
 
 function createViewForSelectedRooms() {
@@ -88,7 +90,7 @@ function createViewForSelectedRooms() {
     arraySelectedRooms.forEach(el => {
         str += `<div>
                 <div class="info">
-                    ${el.textValue} - X${el.numberValue}
+                    ${el.textValue} - ${el.numberValue}
                </div>
                <div class="actions">
                     <button type="button" onclick="changeTypeRooms(${el.id}, 'add')">plus</button>
@@ -114,6 +116,7 @@ function changeTypeRooms(elId, type) {
 
     createViewForSelectedRooms()
     recreateHiddenInputsForRooms()
+    setTotalPrice()
 }
 
 function recreateHiddenInputsForRooms() {
@@ -158,6 +161,7 @@ function addService() {
     }
     createViewForSelectedServices()
     recreateHiddenInputsForServices()
+    setTotalPrice()
 }
 
 function createViewForSelectedServices() {
@@ -193,6 +197,7 @@ function changeTypeServices(elId, type) {
 
     createViewForSelectedServices()
     recreateHiddenInputsForServices()
+    setTotalPrice()
 }
 
 function recreateHiddenInputsForServices() {
@@ -210,4 +215,26 @@ function recreateHiddenInputsForServices() {
             document.querySelector("#hidden-inputs-services").appendChild(input)
         }
     })
+}
+
+function  setTotalPrice() {
+    let sum =0;
+
+    const startDate = new Date(document.getElementById("startDate").value)
+    const endDate = new Date(document.getElementById("endDate").value)
+    const dif  = endDate - startDate/(1000 * 3600 * 24);
+
+    console.log(startDate)
+    console.log(endDate)
+    console.log(dif)
+
+    arraySelectedServices.forEach((el,i) => {
+        sum = sum + el.numberValue * el.pricePerDay
+    })
+
+    arraySelectedRooms.forEach((el,i) => {
+        sum = sum + el.numberValue * el.pricePerDay
+    })
+
+    document.getElementById("totalSum").value = sum
 }

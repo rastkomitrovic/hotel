@@ -19,25 +19,9 @@ public interface RoomRepository extends PagingAndSortingRepository<Room, Long> {
     @Query("Select r from Room r where r.roomNumber=:param or r.floor=:param or r.roomType.roomTypeName like concat('%',:param,'%')")
     Page<Room> findAllByParam(Pageable pageable, @Param("param") String param);
 
-    @Query(value = "SELECT ro.*, rt.*\n" +
-            "FROM room ro INNER join roomtype rt on ro.room_type_id = rt.room_type_id left outer join (\n" +
-            "    select rr.room_id as room_id \n" +
-            "    from reservationroom rr join \n" +
-            "    reservation re on rr.reservation_id = re.reservation_id\n" +
-            "    where re.start_date <= :startDate and re.end_date >= :endDate\n" +
-            "    or re.start_date <= :startDate and re.end_date >= :endDate) rero\n" +
-            "ON ro.room_id = rero.room_id\n" +
-            "where rero.room_id is null",nativeQuery = true)
+    @Query(value = "select ro.*, rt.* from room ro join (select rr.room_id as room_id from reservationroom rr join reservation re on rr.reservation_id = re.reservation_id where re.start_date > :endDate || re.end_date< :startDate) rero ON ro.room_id = rero.room_id JOIN roomtype rt on ro.room_type_id = rt.room_type_id",nativeQuery = true)
     List<Room> findAllAvailable(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
-    @Query(value = "SELECT ro.*, rt.*\n" +
-            "FROM room ro INNER join roomtype rt on ro.room_type_id = rt.room_type_id left outer join (\n" +
-            "    select rr.room_id as room_id \n" +
-            "    from reservationroom rr join \n" +
-            "    reservation re on rr.reservation_id = re.reservation_id\n" +
-            "    where re.start_date <= :startDate and re.end_date >= :endDate\n" +
-            "    or re.start_date <= :startDate and re.end_date >= :endDate and rr.reservation_id!=:reservationId) rero\n" +
-            "ON ro.room_id = rero.room_id\n" +
-            "where rero.room_id is null",nativeQuery = true)
-    List<Room> findAllAvailableExcludingReservation(@Param("startDate") Date startDate, @Param("endDate") Date endDate, Long reservationId);
+    @Query(value = "select ro.*, rt.* from room ro join (select rr.room_id as room_id from reservationroom rr join reservation re on rr.reservation_id = re.reservation_id where re.start_date > :endDate || re.end_date< :startDate and re.reservation_id != :reservationId) rero ON ro.room_id = rero.room_id JOIN roomtype rt on ro.room_type_id = rt.room_type_id",nativeQuery = true)
+    List<Room> findAllAvailableExcludingReservation(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("reservationId")Long reservationId);
 }

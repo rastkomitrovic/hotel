@@ -22,4 +22,13 @@ public class DateEditor extends PropertyEditorSupport {
         }
         setValue(date);
     }
+
+    @Override
+    public String getAsText() {
+        Object object = getValue();
+        if(object == null)
+            return "";
+        Date date = (Date) getValue();
+        return sdf.format(date);
+    }
 }

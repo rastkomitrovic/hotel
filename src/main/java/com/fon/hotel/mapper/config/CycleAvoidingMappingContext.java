@@ -3,7 +3,6 @@ package com.fon.hotel.mapper.config;
 import org.mapstruct.BeforeMapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.TargetType;
-import org.springframework.stereotype.Component;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
